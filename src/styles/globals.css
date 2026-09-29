@@ -1,26 +1,239 @@
 @import "tailwindcss";
 
+/* ==========================================================================
+   Design system Giron 2028 — palette provisoire « Nuit de Glâne »
+   L'identité officielle n'est pas encore fournie : toutes les couleurs sont
+   définies ici, en un seul endroit, pour être remplacées facilement.
+   ========================================================================== */
+
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  /* Couleurs de marque (fixes, quel que soit le thème) */
+  --brand-night: #120a1c; /* nuit profonde — héros, sections immersives */
+  --brand-plum: #2a1440; /* prune — dégradés, collines */
+  --brand-plum-2: #3d1d5c;
+  --brand-coral: #ff5a36; /* corail électrique — énergie, CTA */
+  --brand-amber: #ffb23e; /* ambre chaud — lumières, accents */
+  --brand-cream: #fbf6ef; /* crème — sections claires */
+
+  /* Lieux du programme */
+  --venue-cantine: #ff5a36;
+  --venue-tonnelle: #ffb23e;
+  --venue-caveau: #b55cff;
+  --venue-jeux: #2fd4a5;
+
+  /* Tokens sémantiques — thème clair (défaut) */
+  --bg: var(--brand-cream);
+  --bg-elevated: #ffffff;
+  --bg-sunken: #f3ebe0;
+  --fg: #1b1225;
+  --fg-muted: #5a4f66;
+  --border: #e6dccf;
+  --accent: var(--brand-coral);
+  --accent-fg: #1b1225; /* texte posé sur l'accent */
+  --accent-strong: #c2331a; /* accent utilisable en texte (AA sur fond clair) */
+  --ring: #c2331a;
+
+  color-scheme: light;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+/* Thème sombre : tokens sémantiques uniquement (choix explicite, puis système) */
+:root[data-theme="dark"] {
+  --bg: #0e0915;
+  --bg-elevated: #1a1224;
+  --bg-sunken: #140d1d;
+  --fg: #f5eee6;
+  --fg-muted: #b8acc4;
+  --border: #2e2339;
+  --accent-strong: #ff7a5c;
+  --ring: #ffb23e;
+  color-scheme: dark;
 }
 
 @media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+  :root:not([data-theme="light"]) {
+    --bg: #0e0915;
+    --bg-elevated: #1a1224;
+    --bg-sunken: #140d1d;
+    --fg: #f5eee6;
+    --fg-muted: #b8acc4;
+    --border: #2e2339;
+    --accent-strong: #ff7a5c;
+    --ring: #ffb23e;
+    color-scheme: dark;
   }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: var(--font-sans), Arial, Helvetica, sans-serif;
+/* Sections immersives : toujours « nuit », quel que soit le thème */
+.tone-night {
+  --bg: var(--brand-night);
+  --bg-elevated: #1d1230;
+  --bg-sunken: #0b0612;
+  --fg: #f7efe6;
+  --fg-muted: #c4b6d3;
+  --border: #33244a;
+  --accent-strong: #ff7a5c;
+  --ring: #ffb23e;
+  color-scheme: dark;
+  background-color: var(--bg);
+  color: var(--fg);
+}
+
+@theme inline {
+  --color-surface: var(--bg);
+  --color-elevated: var(--bg-elevated);
+  --color-sunken: var(--bg-sunken);
+  --color-ink: var(--fg);
+  --color-muted: var(--fg-muted);
+  --color-line: var(--border);
+  --color-accent: var(--accent);
+  --color-accent-fg: var(--accent-fg);
+  --color-accent-strong: var(--accent-strong);
+
+  --color-night: var(--brand-night);
+  --color-plum: var(--brand-plum);
+  --color-plum-2: var(--brand-plum-2);
+  --color-coral: var(--brand-coral);
+  --color-amber: var(--brand-amber);
+  --color-cream: var(--brand-cream);
+
+  --color-cantine: var(--venue-cantine);
+  --color-tonnelle: var(--venue-tonnelle);
+  --color-caveau: var(--venue-caveau);
+  --color-jeux: var(--venue-jeux);
+
+  --font-sans: var(--font-geist-sans);
+  --font-display: var(--font-bricolage);
+
+  --animate-marquee: marquee var(--marquee-duration, 40s) linear infinite;
+  --animate-drift: drift 18s ease-in-out infinite alternate;
+  --animate-twinkle: twinkle 3.2s ease-in-out infinite;
+  --animate-rise: rise 0.9s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+/* Entrée au chargement (CSS pur : visible sans attendre l'hydratation) */
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 28px, 0);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes marquee {
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+@keyframes drift {
+  0% {
+    transform: translate3d(-6%, -4%, 0) scale(1);
+  }
+  100% {
+    transform: translate3d(6%, 5%, 0) scale(1.15);
+  }
+}
+
+@keyframes twinkle {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.35;
+  }
+}
+
+@layer base {
+  html {
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    html {
+      scroll-behavior: smooth;
+    }
+  }
+
+  body {
+    background-color: var(--bg);
+    color: var(--fg);
+    font-family: var(--font-sans), system-ui, sans-serif;
+    text-rendering: optimizeLegibility;
+  }
+
+  :focus-visible {
+    outline: 3px solid var(--ring);
+    outline-offset: 3px;
+    border-radius: 6px;
+  }
+
+  ::selection {
+    background: var(--brand-coral);
+    color: #1b1225;
+  }
+
+  [id] {
+    scroll-margin-top: 6rem;
+  }
+}
+
+@layer components {
+  /* Titres display */
+  .font-display {
+    font-family: var(--font-display), system-ui, sans-serif;
+  }
+
+  .display-xl {
+    font-family: var(--font-display), system-ui, sans-serif;
+    font-weight: 800;
+    font-stretch: 75%;
+    line-height: 0.86;
+    letter-spacing: -0.01em;
+    text-transform: uppercase;
+  }
+
+  .eyebrow {
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+  }
+
+  /* Grain léger pour les sections immersives */
+  .grain::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    opacity: 0.09;
+    mix-blend-mode: overlay;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+
+  .text-gradient {
+    background: linear-gradient(
+      100deg,
+      var(--brand-amber) 0%,
+      var(--brand-coral) 55%,
+      #ff3d7f 100%
+    );
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+}
+
+/* Animations CSS coupées si l'utilisateur le demande */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
 }
