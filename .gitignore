@@ -45,3 +45,7 @@ Thumbs.db
 # === Divers ===
 /coverage
 *.tsbuildinfo
+
+# === Next.js (généré) ===
+next-env.d.ts
+.vercel
