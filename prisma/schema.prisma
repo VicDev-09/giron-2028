@@ -1,0 +1,13 @@
+// Schéma Prisma — Giron 2028
+// Docs : https://pris.ly/d/prisma-schema
+// L'URL de connexion est lue depuis DATABASE_URL (voir prisma.config.ts).
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+// Modèles ajoutés en Phase 3.
