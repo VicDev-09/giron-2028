@@ -44,7 +44,7 @@ export function TreasureReveal() {
         <p className="mt-4 text-lg text-white/80">
           {code === null
             ? "Ton carnet semble incomplet ou altéré : reprends la chasse depuis le carnet."
-            : "Rassemble d'abord les six fragments du carnet pour l'ouvrir."}
+            : `Rassemble d'abord les ${treasure.steps.length} fragments du carnet pour l'ouvrir.`}
         </p>
         <div className="mt-8">
           <ButtonLink href="/chasse" arrow>

@@ -1,7 +1,9 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { useEffect, useRef, type ReactNode } from "react";
+import { useEffect, useRef, type MouseEvent } from "react";
+import { useTreasure } from "@/lib/treasure";
+import { useTreasureStep } from "./useTreasureStep";
 
 const SECRET_WORD = "giron";
 
@@ -40,20 +42,31 @@ export function TreasureKeyTrigger() {
 }
 
 /**
- * Point d'entrée caché n°2 (tactile compris) : toucher cinq fois de suite
- * le grand « Giron 28 » du pied de page.
+ * Grand filigrane « Giron 28 » du pied de page.
+ *  • Hors partie : point d'entrée caché n°2 (tactile compris) — le toucher
+ *    cinq fois de suite ouvre le carnet.
+ *  • Pendant la partie : cachette « À rebours » — ses deux parties touchées
+ *    dans un certain ordre (secret "rebours-<partie>><partie>").
  */
-export function TreasureTapTrigger({
-  children,
-  className,
-}: {
-  children: ReactNode;
-  className?: string;
-}) {
+export function TreasureTapTrigger({ className }: { className?: string }) {
   const router = useRouter();
+  const progress = useTreasure();
+  const { active, attempt } = useTreasureStep("rebours");
   const taps = useRef<number[]>([]);
+  const parts = useRef<string[]>([]);
 
-  function onClick() {
+  function onClick(e: MouseEvent<HTMLParagraphElement>) {
+    if (progress.started) {
+      if (!active) return;
+      const part = (e.target as HTMLElement).dataset.part;
+      if (!part) return;
+      parts.current = [...parts.current, part].slice(-2);
+      if (parts.current.length === 2) {
+        void attempt(`rebours-${parts.current.join(">")}`);
+        parts.current = [];
+      }
+      return;
+    }
     const now = Date.now();
     taps.current = [...taps.current.filter((t) => now - t < 2500), now];
     if (taps.current.length >= 5) {
@@ -64,7 +77,7 @@ export function TreasureTapTrigger({
 
   return (
     <p aria-hidden onClick={onClick} className={className}>
-      {children}
+      <span data-part="giron">Giron</span> <span data-part="28">28</span>
     </p>
   );
 }

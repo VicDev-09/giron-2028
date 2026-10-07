@@ -18,7 +18,7 @@ import {
   type ProgrammeEvent,
 } from "@/content/programme";
 import { recitDays, recitIntro } from "@/content/recit";
-import { TreasureHint } from "@/components/treasure/TreasureHint";
+import { TreasureDecoy } from "@/components/treasure/TreasureDecoy";
 import { ButtonLink } from "@/components/ui/Button";
 import { cn } from "@/lib/cn";
 import { useMediaQuery } from "@/lib/media";
@@ -293,10 +293,10 @@ function PanelContent({ panel }: { panel: Panel }) {
           >
             {recit.text}
           </motion.p>
-          {/* Chasse au trésor — étape 3 (invisible hors partie) */}
+          {/* Chasse au trésor — leurre (n'existe que pendant une partie) */}
           {panel.day === "dimanche" && (
-            <TreasureHint
-              step="lanterne"
+            <TreasureDecoy
+              glyph="lanterne"
               className="absolute top-12 right-0 lg:motion-safe:top-6 lg:motion-safe:right-4"
             />
           )}

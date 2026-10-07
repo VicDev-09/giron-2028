@@ -3,6 +3,7 @@
 import { AnimatePresence, motion } from "framer-motion";
 import { useSyncExternalStore } from "react";
 import { cn } from "@/lib/cn";
+import { useTreasureStep } from "@/components/treasure/useTreasureStep";
 
 // Horloge partagée : une seule minuterie, lue via useSyncExternalStore.
 function subscribe(callback: () => void) {
@@ -38,6 +39,8 @@ interface CountdownProps {
 
 export function Countdown({ target, label, className }: CountdownProps) {
   const now = useSyncExternalStore(subscribe, getSeconds, getServerSeconds);
+  // Chasse au trésor : cachette « Le sablier » (secret "seconde-<valeur>")
+  const sablier = useTreasureStep("sablier");
   const targetSeconds = Math.floor(new Date(target).getTime() / 1000);
   const remaining = now === null ? null : targetSeconds - now;
 
@@ -66,6 +69,11 @@ export function Countdown({ target, label, className }: CountdownProps) {
           return (
             <div
               key={unit}
+              onClick={
+                sablier.active && unit === "secondes"
+                  ? () => void sablier.attempt(`seconde-${text}`)
+                  : undefined
+              }
               className="relative flex flex-col items-center overflow-hidden rounded-2xl border border-white/10 bg-white/[0.06] px-2 py-3 backdrop-blur-md sm:px-4 sm:py-4"
             >
               <span className="relative block h-[1.1em] overflow-hidden font-display text-3xl leading-none font-extrabold tabular-nums sm:text-5xl">

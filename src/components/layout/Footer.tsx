@@ -79,9 +79,7 @@ export function Footer() {
         </div>
 
         {/* Entrée cachée de la chasse au trésor : toucher 5 fois */}
-        <TreasureTapTrigger className="display-xl mt-20 bg-gradient-to-b from-white/15 to-white/0 bg-clip-text text-[22vw] text-transparent select-none lg:text-[17rem]">
-          Giron 28
-        </TreasureTapTrigger>
+        <TreasureTapTrigger className="display-xl mt-20 bg-gradient-to-b from-white/15 to-white/0 bg-clip-text text-[22vw] text-transparent select-none lg:text-[17rem]" />
 
         <div className="mt-6 flex flex-col gap-4 border-t border-white/10 pt-6 text-xs text-white/60 sm:flex-row sm:items-center sm:justify-between">
           <p>

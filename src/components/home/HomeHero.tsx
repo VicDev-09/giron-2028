@@ -4,7 +4,8 @@ import { ButtonLink } from "@/components/ui/Button";
 import { Countdown } from "@/components/ui/Countdown";
 import { NightScene } from "@/components/ui/NightScene";
 import { Container } from "@/components/ui/Section";
-import { TreasureHint } from "@/components/treasure/TreasureHint";
+import { TentKnock } from "@/components/treasure/TentKnock";
+import { TreasureDecoy } from "@/components/treasure/TreasureDecoy";
 
 const delay = (s: number) => ({ animationDelay: `${s}s` });
 
@@ -67,9 +68,10 @@ export function HomeHero() {
         <NightScene alive className="-z-10" />
       )}
 
-      {/* Chasse au trésor — étape 1 (invisible hors partie) */}
-      <TreasureHint
-        step="etoile"
+      {/* Chasse au trésor : cachette « La toile » (rien d'affiché) + leurre */}
+      <TentKnock />
+      <TreasureDecoy
+        glyph="etoile"
         className="absolute top-[17%] right-[8%] sm:top-[24%] sm:right-[22%]"
       />
 

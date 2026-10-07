@@ -157,7 +157,7 @@ function Intro() {
 }
 
 const stepLabel = (step: TreasureStep, n: number) =>
-  `Étape ${n + 1} · ${step.type === "indice" ? "Indice caché" : "Énigme"}`;
+  `Étape ${n + 1} · ${step.type === "indice" ? "Cachette" : "Énigme"}`;
 
 function DoneStep({
   step,
@@ -210,8 +210,7 @@ function CurrentStep({ step, n }: { step: TreasureStep; n: number }) {
         <AnswerForm step={step} />
       ) : (
         <p className="mt-5 text-sm leading-relaxed text-[#5b4632]">
-          L&apos;indice n&apos;apparaît que maintenant. Quand tu l&apos;auras
-          trouvé, touche-le : son fragment s&apos;ajoutera à ce carnet.
+          Ce fragment ne s&apos;écrit pas ici : il se trouve.
         </p>
       )}
     </article>
@@ -237,9 +236,9 @@ function AnswerForm({ step }: { step: TreasureStep }) {
     setPending(false);
     if (!result.ok) {
       setError(
-        result.reason === "wrong"
-          ? "Ce n'est pas ça… relis bien l'énigme."
-          : "Cette étape n'est pas encore accessible.",
+        result.reason === "decoy"
+          ? "Fausse piste… quelqu'un a voulu t'égarer."
+          : "Ce n'est pas la bonne piste…",
       );
       void shake.start({
         x: [0, -8, 8, -5, 5, 0],

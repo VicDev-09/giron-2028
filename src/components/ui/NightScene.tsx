@@ -167,7 +167,9 @@ export function NightScene({
         d="M0 250 C 200 215 360 240 540 222 C 720 205 860 240 1040 228 C 1200 218 1320 236 1440 226 L1440 320 L0 320 Z"
       >
         {/* Petite silhouette de village et de tente de fête */}
-        <path d="M600 226 l18 -22 l18 22 z M636 226 v-14 h26 v14 z M700 224 q46 -40 92 0 z M806 226 l10 -14 l10 14 z" />
+        <path d="M600 226 l18 -22 l18 22 z M636 226 v-14 h26 v14 z M806 226 l10 -14 l10 14 z" />
+        {/* Tente de fête — sert aussi de cachette à la chasse au trésor */}
+        <path data-treasure-tent d="M700 224 q46 -40 92 0 z" />
         <rect x="741" y="176" width="2" height="12" />
       </Hill>
 

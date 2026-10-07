@@ -7,6 +7,7 @@ import { MotionProvider } from "@/components/layout/MotionProvider";
 import { PageTransition } from "@/components/layout/PageTransition";
 import { ScrollProgress } from "@/components/layout/ScrollProgress";
 import { themeScript } from "@/components/layout/ThemeToggle";
+import { TreasureToaster } from "@/components/treasure/toast";
 import { TreasureKeyTrigger } from "@/components/treasure/TreasureTrigger";
 import { site } from "@/content/site";
 import "@/styles/globals.css";
@@ -69,6 +70,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
           <Footer />
           <CustomCursor />
           <TreasureKeyTrigger />
+          <TreasureToaster />
         </MotionProvider>
       </body>
     </html>

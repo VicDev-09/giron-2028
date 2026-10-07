@@ -2,6 +2,7 @@
 
 import { motion, type Variants } from "framer-motion";
 import { Sparkle } from "lucide-react";
+import { useRef, useState, type PointerEvent } from "react";
 import {
   lineupExtras,
   lineupNights,
@@ -14,6 +15,7 @@ import { site } from "@/content/site";
 import { ButtonLink } from "@/components/ui/Button";
 import { Container } from "@/components/ui/Section";
 import { venueStyles } from "@/components/programme/meta";
+import { useTreasureStep } from "@/components/treasure/useTreasureStep";
 import { cn } from "@/lib/cn";
 
 const ease = [0.22, 1, 0.36, 1] as const;
@@ -114,7 +116,7 @@ export function LineupPoster() {
                   {dayLabel(night.day)} · {venueLabel(night.venue)} ·{" "}
                   {night.time}
                 </motion.p>
-                <Headliner act={night.headliner} />
+                <ReversibleHeadliner act={night.headliner} day={night.day} />
                 <motion.ul
                   variants={cascade(0.08, 0.5)}
                   className="mx-auto mt-6 flex max-w-3xl flex-wrap items-center justify-center gap-x-4 gap-y-2 font-display text-2xl font-bold tracking-tight sm:gap-x-6 sm:text-4xl"
@@ -239,6 +241,71 @@ function words(text: string) {
     start += w.length + 1;
   }
   return out;
+}
+
+// Sceaux du revers : couleurs des lieux, sans leur nom (ordre volontairement mêlé)
+const seals = [
+  { venue: "caveau", name: "violet" },
+  { venue: "cantine", name: "corail" },
+  { venue: "jeux", name: "vert" },
+  { venue: "tonnelle", name: "ambre" },
+] as const;
+
+/**
+ * Chasse au trésor : cachette « Le revers ». Pendant cette étape seulement,
+ * la tête d'affiche du samedi se retourne au double-clic / double-tap et
+ * montre des sceaux (secret "sceau-<lieu>"). Sinon : tête d'affiche normale.
+ */
+function ReversibleHeadliner({ act, day }: { act: LineupAct; day: string }) {
+  const revers = useTreasureStep("revers");
+  const enabled = revers.active && day === "samedi";
+  const [turned, setTurned] = useState(false);
+  const lastTap = useRef(0);
+  const shown = enabled && turned;
+
+  function onPointerUp(e: PointerEvent<HTMLDivElement>) {
+    if (!enabled || (e.target as Element).closest("button")) return;
+    const now = Date.now();
+    if (now - lastTap.current < 350) {
+      setTurned((t) => !t);
+      lastTap.current = 0;
+    } else {
+      lastTap.current = now;
+    }
+  }
+
+  if (!enabled) return <Headliner act={act} />;
+
+  return (
+    <div onPointerUp={onPointerUp} className="select-none [perspective:1200px]">
+      <motion.div
+        animate={{ rotateY: shown ? 180 : 0 }}
+        transition={{ duration: 0.8, ease }}
+        style={{ transformStyle: "preserve-3d" }}
+        className="relative"
+      >
+        <div className="[backface-visibility:hidden]">
+          <Headliner act={act} />
+        </div>
+        <div
+          aria-hidden={!shown}
+          className="absolute inset-0 flex items-center justify-center gap-3 [transform:rotateY(180deg)] [backface-visibility:hidden] sm:gap-6"
+        >
+          {seals.map((seal) => (
+            <button
+              key={seal.venue}
+              type="button"
+              tabIndex={shown ? 0 : -1}
+              aria-label={`Sceau ${seal.name}`}
+              onClick={() => void revers.attempt(`sceau-${seal.venue}`)}
+              className="size-12 rounded-full border-4 border-white/25 shadow-[inset_0_-6px_12px_rgba(0,0,0,0.35),0_10px_24px_-10px_rgba(0,0,0,0.8)] transition-transform hover:scale-110 sm:size-16"
+              style={{ background: `var(--venue-${seal.venue})` }}
+            />
+          ))}
+        </div>
+      </motion.div>
+    </div>
+  );
 }
 
 /** Tête d'affiche : lettres révélées derrière un masque + reflet balayant. */

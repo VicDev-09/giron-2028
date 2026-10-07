@@ -11,6 +11,7 @@ import {
   type VenueId,
 } from "@/content/programme";
 import { cn } from "@/lib/cn";
+import { useTreasureStep } from "@/components/treasure/useTreasureStep";
 import { EventCard } from "./EventCard";
 import { venueStyles } from "./meta";
 
@@ -47,6 +48,14 @@ export function ProgrammeExplorer() {
   }, [day, selectedVenues]);
 
   const count = groups.reduce((n, g) => n + g.events.length, 0);
+
+  // Chasse au trésor : cachette « Le silence » — toucher un résultat vide.
+  // Secret "silence-<jour>-<lieux triés joints par +>". Silencieux sinon.
+  const silence = useTreasureStep("silence");
+  const listen = () =>
+    void silence.attempt(
+      `silence-${day}-${[...selectedVenues].sort().join("+")}`,
+    );
   const filtersActive = day !== "tous" || selectedVenues.length > 0;
 
   return (
@@ -193,7 +202,10 @@ export function ProgrammeExplorer() {
         </AnimatePresence>
 
         {count === 0 && (
-          <div className="rounded-3xl border border-dashed border-line p-12 text-center">
+          <div
+            onClick={silence.active ? listen : undefined}
+            className="rounded-3xl border border-dashed border-line p-12 text-center"
+          >
             <p className="font-display text-2xl font-bold">
               Rien à cet endroit ce jour-là.
             </p>

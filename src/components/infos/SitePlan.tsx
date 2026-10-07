@@ -10,9 +10,10 @@ import {
   Tent,
   type LucideIcon,
 } from "lucide-react";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { cn } from "@/lib/cn";
-import { TreasureHint } from "@/components/treasure/TreasureHint";
+import { TreasureDecoy } from "@/components/treasure/TreasureDecoy";
+import { useTreasureStep } from "@/components/treasure/useTreasureStep";
 
 interface Zone {
   id: string;
@@ -134,6 +135,18 @@ const zones: Zone[] = [
 export function SitePlan() {
   const [active, setActive] = useState<string | null>(null);
 
+  // Chasse au trésor : cachette « Le chemin » — les 4 dernières zones
+  // touchées forment le secret "chemin-<a>><b>><c>><d>". Silencieux sinon.
+  const chemin = useTreasureStep("chemin");
+  const path = useRef<string[]>([]);
+  const walk = (id: string) => {
+    if (!chemin.active) return;
+    path.current = [...path.current, id].slice(-4);
+    if (path.current.length === 4) {
+      void chemin.attempt(`chemin-${path.current.join(">")}`);
+    }
+  };
+
   return (
     <div className="grid gap-8 lg:grid-cols-[1fr_18rem]">
       <div className="relative overflow-hidden rounded-[2rem] border border-line bg-sunken p-3 sm:p-5">
@@ -185,6 +198,7 @@ export function SitePlan() {
                 }}
                 onPointerEnter={() => setActive(z.id)}
                 onPointerLeave={() => setActive(null)}
+                onClick={() => walk(z.id)}
               >
                 <rect
                   x={z.x}
@@ -210,9 +224,9 @@ export function SitePlan() {
             );
           })}
         </svg>
-        {/* Chasse au trésor — étape 5, entre vélos et camping (invisible hors partie) */}
-        <TreasureHint
-          step="trefle"
+        {/* Chasse au trésor — leurre (n'existe que pendant une partie) */}
+        <TreasureDecoy
+          glyph="trefle"
           className="absolute top-[77%] left-[56%] sm:top-[84%] -translate-x-1/2 -translate-y-1/2"
         />
         <p className="absolute right-6 bottom-5 rounded-full bg-elevated/90 px-3 py-1 text-xs font-semibold text-muted">
@@ -229,6 +243,7 @@ export function SitePlan() {
               onPointerLeave={() => setActive(null)}
               onFocus={() => setActive(z.id)}
               onBlur={() => setActive(null)}
+              onClick={() => walk(z.id)}
               className={cn(
                 "flex w-full items-center gap-3 rounded-2xl border px-4 py-3 text-left text-sm font-semibold transition-colors",
                 active === z.id
