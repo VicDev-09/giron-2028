@@ -4,6 +4,7 @@ import { site } from "@/content/site";
 import { PageHero } from "@/components/layout/PageHero";
 import { kindIcons } from "@/components/programme/meta";
 import { ProgrammeExplorer } from "@/components/programme/ProgrammeExplorer";
+import { ProgrammeStory } from "@/components/programme/ProgrammeStory";
 import { ButtonLink } from "@/components/ui/Button";
 import { Reveal } from "@/components/ui/Reveal";
 import { Section } from "@/components/ui/Section";
@@ -34,6 +35,8 @@ export default function LaFetePage() {
           </ButtonLink>
         </div>
       </PageHero>
+
+      <ProgrammeStory />
 
       <Section id="programme" aria-labelledby="titre-programme">
         <SectionHeading
