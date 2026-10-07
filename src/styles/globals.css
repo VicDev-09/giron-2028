@@ -148,6 +148,12 @@
   }
 }
 
+@keyframes rays {
+  to {
+    transform: rotate(1turn);
+  }
+}
+
 @keyframes twinkle {
   0%,
   100% {
@@ -276,6 +282,35 @@
         rgb(255 178 62 / 0.1),
         transparent 70%
       );
+  }
+
+  /* Rayons de l'affiche lineup : éventail conique centré en haut, rotation
+     lente (transform) à partir de la tablette, figée en reduced-motion. */
+  .poster-rays::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 50%;
+    width: max(220%, 90rem);
+    aspect-ratio: 1;
+    translate: -50% -50%;
+    background: repeating-conic-gradient(
+      rgb(255 178 62 / 0.08) 0deg 5deg,
+      transparent 5deg 15deg
+    );
+    -webkit-mask-image: radial-gradient(
+      closest-side,
+      #000 15%,
+      transparent 72%
+    );
+    mask-image: radial-gradient(closest-side, #000 15%, transparent 72%);
+    will-change: transform;
+  }
+
+  @media (min-width: 640px) and (prefers-reduced-motion: no-preference) {
+    .poster-rays::before {
+      animation: rays 90s linear infinite;
+    }
   }
 
   .text-gradient {
