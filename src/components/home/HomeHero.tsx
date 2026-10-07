@@ -63,7 +63,7 @@ export function HomeHero() {
           <div className="absolute inset-0 bg-gradient-to-b from-night/70 via-night/50 to-night" />
         </div>
       ) : (
-        <NightScene className="-z-10" />
+        <NightScene alive className="-z-10" />
       )}
 
       <Container className="flex flex-1 flex-col justify-end gap-12 pt-32 pb-20 lg:grid lg:grid-cols-[1fr_minmax(0,26rem)] lg:items-end lg:gap-16 lg:pb-24">

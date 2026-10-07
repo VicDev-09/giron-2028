@@ -12,7 +12,7 @@ const spring = { stiffness: 220, damping: 18, mass: 0.4 };
  */
 export function Magnetic({
   children,
-  strength = 0.3,
+  strength = 0.22,
   className,
 }: {
   children: ReactNode;

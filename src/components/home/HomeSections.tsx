@@ -141,7 +141,7 @@ export function KeyFigures() {
             <CountUp
               value={f.value}
               suffix={f.suffix}
-              className="block font-display text-5xl leading-none font-extrabold tracking-tight text-gradient sm:text-7xl"
+              className="inline-block font-display text-5xl leading-none font-extrabold tracking-tight text-gradient sm:text-7xl"
             />
             <p className="mt-3 max-w-[14rem] text-sm leading-snug font-medium text-muted sm:text-base">
               {f.label}
