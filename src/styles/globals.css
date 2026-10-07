@@ -227,6 +227,44 @@
   }
 }
 
+/* --------------------------------------------------------------------------
+   Micro-interactions — desktop uniquement, jamais en mouvement réduit
+   -------------------------------------------------------------------------- */
+
+@media (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
+  /* Tilt 3D des cartes : angles écrits en JS (components/ui/tilt.ts) */
+  .tilt {
+    transform: perspective(900px) rotateX(var(--rx, 0deg))
+      rotateY(var(--ry, 0deg));
+    transition:
+      transform 0.25s ease-out,
+      translate 0.5s ease-out,
+      border-color 0.5s ease-out,
+      box-shadow 0.5s ease-out;
+  }
+}
+
+/* Soulignement animé des liens de navigation */
+.nav-underline::after {
+  content: "";
+  position: absolute;
+  left: 0.875rem;
+  right: 0.875rem;
+  bottom: 0.3rem;
+  height: 2px;
+  border-radius: 2px;
+  background: linear-gradient(90deg, var(--brand-amber), var(--brand-coral));
+  transform: scaleX(0);
+  transform-origin: right;
+  transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.nav-underline:hover::after,
+.nav-underline:focus-visible::after {
+  transform: scaleX(1);
+  transform-origin: left;
+}
+
 /* Animations CSS coupées si l'utilisateur le demande */
 @media (prefers-reduced-motion: reduce) {
   *,

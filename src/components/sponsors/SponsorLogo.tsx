@@ -1,6 +1,9 @@
+"use client";
+
 import Image from "next/image";
 import type { Sponsor } from "@/content/sponsors";
 import { cn } from "@/lib/cn";
+import { tiltMove, tiltReset } from "@/components/ui/tilt";
 
 const tierAccent = {
   or: "from-amber/35 to-amber/5 text-amber",
@@ -23,8 +26,10 @@ export function SponsorLogo({
 }) {
   return (
     <div
+      onPointerMove={tiltMove}
+      onPointerLeave={tiltReset}
       className={cn(
-        "group/logo relative flex items-center justify-center overflow-hidden rounded-2xl border border-line bg-elevated p-5 transition-[transform,border-color,box-shadow] duration-500 hover:-translate-y-1 hover:border-accent/50 hover:shadow-[0_20px_50px_-25px_rgba(255,90,54,0.6)]",
+        "tilt group/logo relative flex items-center justify-center overflow-hidden rounded-2xl border border-line bg-elevated p-5 transition-[transform,border-color,box-shadow] duration-500 hover:-translate-y-1 hover:border-accent/50 hover:shadow-[0_20px_50px_-25px_rgba(255,90,54,0.6)]",
         aspect,
         className,
       )}

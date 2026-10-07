@@ -112,6 +112,7 @@ export function HomeHero() {
               href="/infos-pratiques"
               size="lg"
               variant="secondary"
+              magnetic
               className="text-white hover:bg-white hover:text-night"
             >
               Infos pratiques
