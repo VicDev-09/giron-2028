@@ -5,9 +5,23 @@ import { AnimatePresence, motion } from "framer-motion";
 // pendant son animation de sortie (sinon elle afficherait déjà la nouvelle).
 import { LayoutRouterContext } from "next/dist/shared/lib/app-router-context.shared-runtime";
 import { usePathname } from "next/navigation";
-import { useContext, useState, type ReactNode } from "react";
+import {
+  useContext,
+  useState,
+  useSyncExternalStore,
+  type ReactNode,
+} from "react";
 
 const ease = [0.22, 1, 0.36, 1] as const;
+
+const noop = () => () => {};
+/** Faux pendant le rendu serveur et l'hydratation, vrai ensuite. */
+const useHydrated = () =>
+  useSyncExternalStore(
+    noop,
+    () => true,
+    () => false,
+  );
 
 /** Conserve le contexte de routage tel qu'il était au montage. */
 function FrozenRouter({ children }: { children: ReactNode }) {
@@ -26,12 +40,17 @@ function FrozenRouter({ children }: { children: ReactNode }) {
  */
 export function PageTransition({ children }: { children: ReactNode }) {
   const pathname = usePathname();
+  const hydrated = useHydrated();
 
   return (
-    <AnimatePresence mode="wait" initial={false}>
+    // Pas de `initial={false}` ici : AnimatePresence le propagerait à TOUS
+    // les descendants et désactiverait les révélations au scroll de la page.
+    <AnimatePresence mode="wait">
       <motion.div
         key={pathname}
-        initial={{ opacity: 0, y: 14, scale: 0.995 }}
+        // Premier chargement : page visible telle que rendue par le serveur ;
+        // les navigations suivantes jouent l'entrée.
+        initial={hydrated ? { opacity: 0, y: 14, scale: 0.995 } : false}
         animate={{
           opacity: 1,
           y: 0,
