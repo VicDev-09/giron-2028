@@ -2,6 +2,7 @@ import { treasure, type TreasureStep } from "@/content/treasure";
 import {
   CHAIN_SEED,
   checkHash,
+  decoyHash,
   decryptFragment,
   finalCodeHash,
   nextChainKey,
@@ -33,7 +34,11 @@ export interface TreasureProgress {
 
 export type AttemptResult =
   | { ok: true; step: TreasureStep; fragment: string; complete: boolean }
-  | { ok: false; reason: "not-started" | "locked" | "wrong" | "unknown" };
+  | {
+      ok: false;
+      /** `decoy` : fausse piste connue (n'apporte rien, mais le dit) */
+      reason: "not-started" | "locked" | "wrong" | "decoy" | "unknown";
+    };
 
 /**
  * Interface du jeu. Les composants n'utilisent QUE ceci : la mise en œuvre
@@ -44,8 +49,11 @@ export interface TreasureService {
   getProgress(): TreasureProgress;
   subscribe(listener: () => void): () => void;
   start(): void;
-  /** Active un indice caché (jeton porté par l'élément trouvé). */
-  discoverHint(stepId: string, token: string): Promise<AttemptResult>;
+  /**
+   * Tente une cachette : `secret` est construit par le composant à partir
+   * de l'interaction du joueur (nombre de coups, séquence, choix…).
+   */
+  discoverHint(stepId: string, secret: string): Promise<AttemptResult>;
   /** Propose une réponse à une énigme. */
   submitAnswer(stepId: string, answer: string): Promise<AttemptResult>;
   isComplete(): boolean;
@@ -202,7 +210,8 @@ class LocalTreasureService implements TreasureService {
       const previous = state.records.at(-1)?.key ?? CHAIN_SEED;
       const key = await nextChainKey(previous, secret);
       if ((await checkHash(key)) !== step.check) {
-        return { ok: false, reason: "wrong" };
+        const decoy = step.decoys.includes(await decoyHash(step.id, secret));
+        return { ok: false, reason: decoy ? "decoy" : "wrong" };
       }
       const fragment = decryptFragment(step.fragment, key);
       const complete = index === steps.length - 1;

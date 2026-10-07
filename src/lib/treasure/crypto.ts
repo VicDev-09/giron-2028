@@ -50,14 +50,16 @@ export async function sha256Hex(text: string): Promise<string> {
 
 /**
  * Normalisation des réponses : minuscules, sans accents ni ponctuation,
- * sans article initial, pluriel simple retiré (s/x final des mots > 4 lettres).
- * « La Glâne », « glane » et « GLANES » donnent tous « glane ».
+ * sans article initial, pluriel simple retiré (s/x final des mots > 4 lettres),
+ * chiffres recollés. « La Glâne », « glane » et « GLANES » donnent « glane » ;
+ * « 2'052 » et « 2 052 » donnent « 2052 ».
  */
 export function normalizeAnswer(input: string): string {
   const words = input
     .normalize("NFD")
     .replace(/[̀-ͯ]/g, "")
     .toLowerCase()
+    .replace(/(\d)['’ .](?=\d)/g, "$1")
     .replace(/[^a-z0-9]+/g, " ")
     .trim()
     .split(" ")
@@ -75,6 +77,11 @@ export function nextChainKey(previousKey: string, secret: string) {
 
 export function checkHash(chainKey: string) {
   return sha256Hex(`ok|${chainKey}`);
+}
+
+/** Empreinte d'une fausse piste (leurre) propre à une étape. */
+export function decoyHash(stepId: string, secret: string) {
+  return sha256Hex(`decoy|${stepId}|${secret}`);
 }
 
 export function finalCodeHash(code: string) {

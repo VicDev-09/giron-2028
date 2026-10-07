@@ -8,6 +8,7 @@
  *        - id       : identifiant de l'étape (identique à la config)
  *        - secret   : réponse de l'énigme, ou jeton de l'indice caché
  *        - fragment : morceau du code final révélé par l'étape
+ *        - decoys   : (facultatif) fausses pistes plausibles
  *   3. npm run treasure:generate
  *   4. Recopier les valeurs `check` / `fragment` et `finalCodeHash` affichées
  *      dans src/content/treasure.ts.
@@ -18,6 +19,7 @@ import { readFileSync } from "node:fs";
 import {
   CHAIN_SEED,
   checkHash,
+  decoyHash,
   encryptFragment,
   finalCodeHash,
   nextChainKey,
@@ -29,6 +31,8 @@ interface SecretStep {
   type: "indice" | "enigme";
   secret: string;
   fragment: string;
+  /** Fausses pistes plausibles (même format que `secret`) */
+  decoys?: string[];
 }
 
 const file = process.argv[2] ?? "treasure.secrets.json";
@@ -48,7 +52,13 @@ for (const step of steps) {
     `// ${step.id} (${step.type}) — secret normalisé : « ${secret} »`,
   );
   console.log(`check: "${await checkHash(key)}",`);
-  console.log(`fragment: "${encryptFragment(step.fragment, key)}",\n`);
+  console.log(`fragment: "${encryptFragment(step.fragment, key)}",`);
+  const decoys = await Promise.all(
+    (step.decoys ?? []).map((d) =>
+      decoyHash(step.id, step.type === "enigme" ? normalizeAnswer(d) : d),
+    ),
+  );
+  console.log(`decoys: ${JSON.stringify(decoys, null, 2)},\n`);
 }
 
 const code = steps.map((s) => s.fragment).join("");
