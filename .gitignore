@@ -49,3 +49,6 @@ Thumbs.db
 # === Next.js (généré) ===
 next-env.d.ts
 .vercel
+
+# === Chasse au trésor : réponses en clair (JAMAIS committées) ===
+treasure.secrets.json
