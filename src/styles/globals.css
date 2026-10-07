@@ -298,6 +298,85 @@
   transform-origin: left;
 }
 
+/* Curseur festif (components/layout/CustomCursor.tsx). Le JS ne fait que
+   translater .cursor-dot / .cursor-ring ; les états jouent sur les <span>. */
+.cursor-layer {
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+  pointer-events: none;
+}
+
+.cursor-dot,
+.cursor-ring {
+  position: absolute;
+  top: 0;
+  left: 0;
+  opacity: 0;
+  transition: opacity 0.2s ease-out;
+  will-change: transform;
+}
+
+.cursor-dot > span,
+.cursor-ring > span {
+  position: absolute;
+  border-radius: 9999px;
+  transition:
+    transform 0.35s cubic-bezier(0.22, 1, 0.36, 1),
+    opacity 0.2s ease-out,
+    background-color 0.3s ease-out,
+    border-color 0.3s ease-out;
+}
+
+.cursor-dot > span {
+  width: 8px;
+  height: 8px;
+  margin: -4px 0 0 -4px;
+  background: var(--brand-coral);
+  box-shadow: 0 0 12px 2px rgb(255 90 54 / 0.55);
+}
+
+.cursor-ring > span {
+  width: 36px;
+  height: 36px;
+  margin: -18px 0 0 -18px;
+  border: 1.5px solid rgb(255 90 54 / 0.65);
+  background-color: rgb(255 178 62 / 0.08);
+}
+
+:root[data-cursor="hover"] .cursor-ring > span {
+  transform: scale(1.6);
+  border-color: rgb(255 178 62 / 0.9);
+  background-color: rgb(255 178 62 / 0.16);
+}
+
+:root[data-cursor="hover"] .cursor-dot > span {
+  transform: scale(0.5);
+}
+
+.cursor-ring.is-pressed > span {
+  transform: scale(0.8);
+}
+
+:root[data-cursor="hover"] .cursor-ring.is-pressed > span {
+  transform: scale(1.3);
+}
+
+/* Sur un champ de saisie : curseur texte natif, curseur festif masqué */
+:root[data-cursor="text"] .cursor-dot > span,
+:root[data-cursor="text"] .cursor-ring > span {
+  opacity: 0;
+}
+
+:root.has-custom-cursor,
+:root.has-custom-cursor * {
+  cursor: none !important;
+}
+
+:root.has-custom-cursor :is(input, textarea, [contenteditable="true"]) {
+  cursor: text !important;
+}
+
 /* Animations CSS coupées si l'utilisateur le demande */
 @media (prefers-reduced-motion: reduce) {
   *,

@@ -2,6 +2,7 @@ import { HomeHero } from "@/components/home/HomeHero";
 import {
   CallsToAction,
   FestTeaser,
+  KeyFigures,
   KeywordBand,
   ProgrammePreview,
   SocialSection,
@@ -14,6 +15,7 @@ export default function Home() {
       <HomeHero />
       <KeywordBand />
       <FestTeaser />
+      <KeyFigures />
       <ProgrammePreview />
       <CallsToAction />
       <SponsorsStrip />

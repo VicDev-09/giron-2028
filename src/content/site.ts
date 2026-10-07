@@ -23,6 +23,9 @@ export const site = {
   // Date utilisée par le compte à rebours (heure suisse). PLACEHOLDER.
   startsAt: "2028-07-13T18:00:00+02:00",
 
+  // PLACEHOLDER — objectif de bénévoles à confirmer par le comité
+  volunteersGoal: 400,
+
   // PLACEHOLDER — adresse e-mail fictive (domaine réservé .example)
   email: "contact@giron2028.example",
   volunteersEmail: "benevoles@giron2028.example",
