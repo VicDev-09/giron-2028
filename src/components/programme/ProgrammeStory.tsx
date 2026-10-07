@@ -245,7 +245,7 @@ function PanelContent({ panel }: { panel: Panel }) {
           <motion.h2
             id="titre-recit"
             variants={item}
-            className="display-xl text-[clamp(3rem,9vw,7.5rem)] text-balance lg:motion-safe:text-[clamp(3rem,6vw,7rem)]"
+            className="display-xl text-[clamp(3rem,9vw,7.5rem)] leading-[0.95] text-balance lg:motion-safe:text-[clamp(3rem,6vw,7rem)]"
           >
             {recitIntro.title}
           </motion.h2>
