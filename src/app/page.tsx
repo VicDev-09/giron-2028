@@ -1,4 +1,5 @@
 import { HomeHero } from "@/components/home/HomeHero";
+import { LineupPoster } from "@/components/home/LineupPoster";
 import {
   CallsToAction,
   FestTeaser,
@@ -17,6 +18,7 @@ export default function Home() {
       <FestTeaser />
       <KeyFigures />
       <ProgrammePreview />
+      <LineupPoster />
       <CallsToAction />
       <SponsorsStrip />
       <SocialSection />
