@@ -1,5 +1,6 @@
 import { CalendarDays, Mail, MapPin } from "lucide-react";
 import Link from "next/link";
+import { TreasureTapTrigger } from "@/components/treasure/TreasureTrigger";
 import { navigation, site } from "@/content/site";
 import { Container } from "@/components/ui/Section";
 import { SocialIcon } from "@/components/ui/SocialIcon";
@@ -77,12 +78,10 @@ export function Footer() {
           </div>
         </div>
 
-        <p
-          aria-hidden
-          className="display-xl mt-20 bg-gradient-to-b from-white/15 to-white/0 bg-clip-text text-[22vw] text-transparent select-none lg:text-[17rem]"
-        >
+        {/* Entrée cachée de la chasse au trésor : toucher 5 fois */}
+        <TreasureTapTrigger className="display-xl mt-20 bg-gradient-to-b from-white/15 to-white/0 bg-clip-text text-[22vw] text-transparent select-none lg:text-[17rem]">
           Giron 28
-        </p>
+        </TreasureTapTrigger>
 
         <div className="mt-6 flex flex-col gap-4 border-t border-white/10 pt-6 text-xs text-white/60 sm:flex-row sm:items-center sm:justify-between">
           <p>
@@ -90,10 +89,18 @@ export function Footer() {
             officielles à venir.
           </p>
           <p>Mentions légales et protection des données : à venir.</p>
-          <p>
+          <p className="flex items-center gap-4">
             <a href="#top" className="hover:text-white">
               Retour en haut ↑
             </a>
+            {/* Lien très discret vers la chasse au trésor */}
+            <Link
+              href="/chasse"
+              aria-label="Carnet secret"
+              className="text-white/25 transition-colors hover:text-amber"
+            >
+              ✦
+            </Link>
           </p>
         </div>
       </Container>

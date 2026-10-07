@@ -18,6 +18,7 @@ import {
   type ProgrammeEvent,
 } from "@/content/programme";
 import { recitDays, recitIntro } from "@/content/recit";
+import { TreasureHint } from "@/components/treasure/TreasureHint";
 import { ButtonLink } from "@/components/ui/Button";
 import { cn } from "@/lib/cn";
 import { useMediaQuery } from "@/lib/media";
@@ -270,7 +271,7 @@ function PanelContent({ panel }: { panel: Panel }) {
       const day = days.find((d) => d.id === panel.day);
       const recit = recitDays[panel.day];
       return (
-        <div className="flex h-full flex-col justify-end border-t border-white/15 pt-10 lg:motion-safe:border-t-0 lg:motion-safe:border-l lg:motion-safe:pt-0 lg:motion-safe:pb-10 lg:motion-safe:pl-[2vw]">
+        <div className="relative flex h-full flex-col justify-end border-t border-white/15 pt-10 lg:motion-safe:border-t-0 lg:motion-safe:border-l lg:motion-safe:pt-0 lg:motion-safe:pb-10 lg:motion-safe:pl-[2vw]">
           <motion.p variants={item} className="eyebrow text-amber">
             {recit.kicker}
           </motion.p>
@@ -292,6 +293,13 @@ function PanelContent({ panel }: { panel: Panel }) {
           >
             {recit.text}
           </motion.p>
+          {/* Chasse au trésor — étape 3 (invisible hors partie) */}
+          {panel.day === "dimanche" && (
+            <TreasureHint
+              step="lanterne"
+              className="absolute top-12 right-0 lg:motion-safe:top-6 lg:motion-safe:right-4"
+            />
+          )}
         </div>
       );
     }

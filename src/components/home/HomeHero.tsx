@@ -4,6 +4,7 @@ import { ButtonLink } from "@/components/ui/Button";
 import { Countdown } from "@/components/ui/Countdown";
 import { NightScene } from "@/components/ui/NightScene";
 import { Container } from "@/components/ui/Section";
+import { TreasureHint } from "@/components/treasure/TreasureHint";
 
 const delay = (s: number) => ({ animationDelay: `${s}s` });
 
@@ -65,6 +66,12 @@ export function HomeHero() {
       ) : (
         <NightScene alive className="-z-10" />
       )}
+
+      {/* Chasse au trésor — étape 1 (invisible hors partie) */}
+      <TreasureHint
+        step="etoile"
+        className="absolute top-[17%] right-[8%] sm:top-[24%] sm:right-[22%]"
+      />
 
       <Container className="flex flex-1 flex-col justify-end gap-12 pt-32 pb-20 lg:grid lg:grid-cols-[1fr_minmax(0,26rem)] lg:items-end lg:gap-16 lg:pb-24">
         <div>

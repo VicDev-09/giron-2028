@@ -12,6 +12,7 @@ import {
 } from "lucide-react";
 import { useState } from "react";
 import { cn } from "@/lib/cn";
+import { TreasureHint } from "@/components/treasure/TreasureHint";
 
 interface Zone {
   id: string;
@@ -209,6 +210,11 @@ export function SitePlan() {
             );
           })}
         </svg>
+        {/* Chasse au trésor — étape 5, entre vélos et camping (invisible hors partie) */}
+        <TreasureHint
+          step="trefle"
+          className="absolute top-[77%] left-[56%] sm:top-[84%] -translate-x-1/2 -translate-y-1/2"
+        />
         <p className="absolute right-6 bottom-5 rounded-full bg-elevated/90 px-3 py-1 text-xs font-semibold text-muted">
           Plan indicatif — à confirmer
         </p>
