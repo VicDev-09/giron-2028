@@ -1,11 +1,12 @@
 "use client";
 
-import type { PointerEvent, ReactNode } from "react";
+import type { ReactNode } from "react";
 import { cn } from "@/lib/cn";
+import { tiltMove, tiltReset } from "./tilt";
 
 /**
- * Carte avec halo lumineux qui suit le pointeur. La position est écrite
- * directement en variables CSS (aucun re-rendu React).
+ * Carte avec halo lumineux qui suit le pointeur et léger tilt 3D (desktop).
+ * La position est écrite directement en variables CSS (aucun re-rendu React).
  */
 export function SpotlightCard({
   children,
@@ -16,17 +17,12 @@ export function SpotlightCard({
   className?: string;
   color?: string;
 }) {
-  function onPointerMove(e: PointerEvent<HTMLDivElement>) {
-    const rect = e.currentTarget.getBoundingClientRect();
-    e.currentTarget.style.setProperty("--x", `${e.clientX - rect.left}px`);
-    e.currentTarget.style.setProperty("--y", `${e.clientY - rect.top}px`);
-  }
-
   return (
     <div
-      onPointerMove={onPointerMove}
+      onPointerMove={tiltMove}
+      onPointerLeave={tiltReset}
       className={cn(
-        "group/spot relative isolate overflow-hidden rounded-3xl border border-line bg-elevated transition-[transform,border-color,box-shadow] duration-500 ease-out hover:-translate-y-1 hover:border-accent/60 hover:shadow-[0_24px_60px_-30px_rgba(255,90,54,0.55)]",
+        "tilt group/spot relative isolate overflow-hidden rounded-3xl border border-line bg-elevated transition-[transform,border-color,box-shadow] duration-500 ease-out hover:-translate-y-1 hover:border-accent/60 hover:shadow-[0_24px_60px_-30px_rgba(255,90,54,0.55)]",
         className,
       )}
     >

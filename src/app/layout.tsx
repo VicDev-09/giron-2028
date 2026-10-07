@@ -1,8 +1,11 @@
 import type { Metadata, Viewport } from "next";
 import { Bricolage_Grotesque, Geist } from "next/font/google";
+import { CustomCursor } from "@/components/layout/CustomCursor";
 import { Footer } from "@/components/layout/Footer";
 import { Header } from "@/components/layout/Header";
 import { MotionProvider } from "@/components/layout/MotionProvider";
+import { PageTransition } from "@/components/layout/PageTransition";
+import { ScrollProgress } from "@/components/layout/ScrollProgress";
 import { themeScript } from "@/components/layout/ThemeToggle";
 import { site } from "@/content/site";
 import "@/styles/globals.css";
@@ -57,11 +60,13 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
           Aller au contenu
         </a>
         <MotionProvider>
+          <ScrollProgress />
           <Header />
           <main id="contenu" className="flex-1">
-            {children}
+            <PageTransition>{children}</PageTransition>
           </main>
           <Footer />
+          <CustomCursor />
         </MotionProvider>
       </body>
     </html>

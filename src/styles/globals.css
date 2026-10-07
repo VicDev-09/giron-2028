@@ -108,6 +108,7 @@
   --animate-drift: drift 18s ease-in-out infinite alternate;
   --animate-twinkle: twinkle 3.2s ease-in-out infinite;
   --animate-rise: rise 0.9s cubic-bezier(0.22, 1, 0.36, 1) both;
+  --animate-aurora: aurora 34s ease-in-out infinite alternate;
 }
 
 /* Entrée au chargement (CSS pur : visible sans attendre l'hydratation) */
@@ -134,6 +135,16 @@
   }
   100% {
     transform: translate3d(6%, 5%, 0) scale(1.15);
+  }
+}
+
+/* Dégradé animé du héros : seul le transform bouge (GPU) */
+@keyframes aurora {
+  0% {
+    transform: translate3d(-4%, -2%, 0) rotate(-4deg) scale(1);
+  }
+  100% {
+    transform: translate3d(4%, 3%, 0) rotate(6deg) scale(1.12);
   }
 }
 
@@ -214,6 +225,59 @@
     background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
   }
 
+  /* Halos de lumière « mesh » des sections nuit : dégradés radiaux de la
+     palette, très peu opaques (le texte reste largement au-dessus de l'AA).
+     Peint sous le contenu (Container en z-10), dérive lente sur desktop. */
+  .mesh::before {
+    content: "";
+    position: absolute;
+    inset: -20%;
+    pointer-events: none;
+    /* Centres gardés loin des bords : aucune coupure nette entre sections */
+    background:
+      radial-gradient(
+        30% 26% at 28% 34%,
+        rgb(255 90 54 / 0.14),
+        transparent 70%
+      ),
+      radial-gradient(
+        26% 22% at 76% 32%,
+        rgb(255 178 62 / 0.1),
+        transparent 70%
+      ),
+      radial-gradient(
+        32% 26% at 64% 64%,
+        rgb(181 92 255 / 0.12),
+        transparent 70%
+      ),
+      radial-gradient(40% 28% at 36% 62%, rgb(61 29 92 / 0.45), transparent 72%);
+  }
+
+  @media (min-width: 768px) and (prefers-reduced-motion: no-preference) {
+    .mesh::before {
+      animation: drift 26s ease-in-out infinite alternate;
+    }
+  }
+
+  .aurora {
+    background:
+      radial-gradient(
+        32% 38% at 28% 30%,
+        rgb(255 61 127 / 0.16),
+        transparent 70%
+      ),
+      radial-gradient(
+        30% 34% at 74% 36%,
+        rgb(181 92 255 / 0.14),
+        transparent 70%
+      ),
+      radial-gradient(
+        40% 26% at 50% 62%,
+        rgb(255 178 62 / 0.1),
+        transparent 70%
+      );
+  }
+
   .text-gradient {
     background: linear-gradient(
       100deg,
@@ -225,6 +289,123 @@
     background-clip: text;
     color: transparent;
   }
+}
+
+/* --------------------------------------------------------------------------
+   Micro-interactions — desktop uniquement, jamais en mouvement réduit
+   -------------------------------------------------------------------------- */
+
+@media (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
+  /* Tilt 3D des cartes : angles écrits en JS (components/ui/tilt.ts) */
+  .tilt {
+    transform: perspective(900px) rotateX(var(--rx, 0deg))
+      rotateY(var(--ry, 0deg));
+    transition:
+      transform 0.25s ease-out,
+      translate 0.5s ease-out,
+      border-color 0.5s ease-out,
+      box-shadow 0.5s ease-out;
+  }
+}
+
+/* Soulignement animé des liens de navigation */
+.nav-underline::after {
+  content: "";
+  position: absolute;
+  left: 0.875rem;
+  right: 0.875rem;
+  bottom: 0.3rem;
+  height: 2px;
+  border-radius: 2px;
+  background: linear-gradient(90deg, var(--brand-amber), var(--brand-coral));
+  transform: scaleX(0);
+  transform-origin: right;
+  transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.nav-underline:hover::after,
+.nav-underline:focus-visible::after {
+  transform: scaleX(1);
+  transform-origin: left;
+}
+
+/* Curseur festif (components/layout/CustomCursor.tsx). Le JS ne fait que
+   translater .cursor-dot / .cursor-ring ; les états jouent sur les <span>. */
+.cursor-layer {
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+  pointer-events: none;
+}
+
+.cursor-dot,
+.cursor-ring {
+  position: absolute;
+  top: 0;
+  left: 0;
+  opacity: 0;
+  transition: opacity 0.2s ease-out;
+  will-change: transform;
+}
+
+.cursor-dot > span,
+.cursor-ring > span {
+  position: absolute;
+  border-radius: 9999px;
+  transition:
+    transform 0.35s cubic-bezier(0.22, 1, 0.36, 1),
+    opacity 0.2s ease-out,
+    background-color 0.3s ease-out,
+    border-color 0.3s ease-out;
+}
+
+.cursor-dot > span {
+  width: 8px;
+  height: 8px;
+  margin: -4px 0 0 -4px;
+  background: var(--brand-coral);
+  box-shadow: 0 0 12px 2px rgb(255 90 54 / 0.55);
+}
+
+.cursor-ring > span {
+  width: 36px;
+  height: 36px;
+  margin: -18px 0 0 -18px;
+  border: 1.5px solid rgb(255 90 54 / 0.65);
+  background-color: rgb(255 178 62 / 0.08);
+}
+
+:root[data-cursor="hover"] .cursor-ring > span {
+  transform: scale(1.6);
+  border-color: rgb(255 178 62 / 0.9);
+  background-color: rgb(255 178 62 / 0.16);
+}
+
+:root[data-cursor="hover"] .cursor-dot > span {
+  transform: scale(0.5);
+}
+
+.cursor-ring.is-pressed > span {
+  transform: scale(0.8);
+}
+
+:root[data-cursor="hover"] .cursor-ring.is-pressed > span {
+  transform: scale(1.3);
+}
+
+/* Sur un champ de saisie : curseur texte natif, curseur festif masqué */
+:root[data-cursor="text"] .cursor-dot > span,
+:root[data-cursor="text"] .cursor-ring > span {
+  opacity: 0;
+}
+
+:root.has-custom-cursor,
+:root.has-custom-cursor * {
+  cursor: none !important;
+}
+
+:root.has-custom-cursor :is(input, textarea, [contenteditable="true"]) {
+  cursor: text !important;
 }
 
 /* Animations CSS coupées si l'utilisateur le demande */

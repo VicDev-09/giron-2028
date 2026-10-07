@@ -79,10 +79,10 @@ export function Header() {
                       href={item.href}
                       aria-current={active ? "page" : undefined}
                       className={cn(
-                        "relative isolate block rounded-full px-3.5 py-2 text-sm font-medium transition-colors",
+                        "relative isolate block rounded-full px-3.5 py-2 text-sm font-medium transition-colors duration-300",
                         active
                           ? "text-white"
-                          : "text-white/75 hover:text-white",
+                          : "nav-underline text-white/75 hover:text-white",
                       )}
                     >
                       {active && (
@@ -106,7 +106,7 @@ export function Header() {
 
           <div className="flex items-center gap-2">
             <ThemeToggle className="grid size-10 place-items-center rounded-full text-white/80 transition-colors hover:bg-white/10 hover:text-white" />
-            <ButtonLink href="/benevoles" className="max-sm:hidden">
+            <ButtonLink href="/benevoles" wrapperClassName="max-sm:hidden">
               Devenir bénévole
             </ButtonLink>
             <button

@@ -1,9 +1,10 @@
 import { ArrowUpRight, HandHeart, Handshake, Sparkle } from "lucide-react";
 import Link from "next/link";
-import { highlights, programme, venues } from "@/content/programme";
+import { days, highlights, programme, venues } from "@/content/programme";
 import { site } from "@/content/site";
 import { sponsors } from "@/content/sponsors";
 import { ButtonLink } from "@/components/ui/Button";
+import { CountUp } from "@/components/ui/CountUp";
 import { Marquee } from "@/components/ui/Marquee";
 import { Reveal, Stagger, StaggerItem } from "@/components/ui/Reveal";
 import { Section } from "@/components/ui/Section";
@@ -105,6 +106,49 @@ export function FestTeaser() {
           ))}
         </Stagger>
       </div>
+    </Section>
+  );
+}
+
+/** Chiffres clés animés à l'entrée dans l'écran. */
+export function KeyFigures() {
+  const figures = [
+    { value: days.length, label: "jours de fête" },
+    { value: venues.length, label: "lieux sur la place de fête" },
+    { value: programme.length, label: "rendez-vous au programme" },
+    { value: site.volunteersGoal, suffix: "+", label: "bénévoles attendus" },
+  ];
+
+  return (
+    <Section
+      tone="night"
+      aria-labelledby="chiffres-cles"
+      className="py-16 sm:py-24"
+    >
+      <h2 id="chiffres-cles" className="sr-only">
+        Le Giron en chiffres
+      </h2>
+      <Stagger
+        as="ul"
+        className="grid grid-cols-2 gap-x-6 gap-y-12 lg:grid-cols-4"
+      >
+        {figures.map((f) => (
+          <StaggerItem
+            as="li"
+            key={f.label}
+            className="border-l border-white/15 pl-5 sm:pl-6"
+          >
+            <CountUp
+              value={f.value}
+              suffix={f.suffix}
+              className="inline-block font-display text-5xl leading-none font-extrabold tracking-tight text-gradient sm:text-7xl"
+            />
+            <p className="mt-3 max-w-[14rem] text-sm leading-snug font-medium text-muted sm:text-base">
+              {f.label}
+            </p>
+          </StaggerItem>
+        ))}
+      </Stagger>
     </Section>
   );
 }

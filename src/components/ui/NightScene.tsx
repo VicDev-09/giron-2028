@@ -4,29 +4,68 @@ import {
   motion,
   useReducedMotion,
   useScroll,
+  useSpring,
   useTransform,
   type MotionValue,
 } from "framer-motion";
-import { useRef, type ReactNode } from "react";
+import { useEffect, useRef, type ReactNode } from "react";
+import { useAmbiance, type Ambiance } from "@/lib/ambiance";
 import { cn } from "@/lib/cn";
+import { usePointerEffects } from "@/lib/media";
+import { Embers } from "./Embers";
+
+/**
+ * Ciels superposés au ciel de nuit (par défaut), révélés en fondu selon
+ * l'heure locale. Le bas reste sombre pour garder le texte du héros lisible.
+ */
+const skies: Record<Exclude<Ambiance, "nuit">, string> = {
+  aube: [
+    "radial-gradient(70% 45% at 18% 78%, rgb(255 138 150 / 0.42), transparent 70%)",
+    "radial-gradient(120% 80% at 50% 0%, #4d2f6e 0%, #2a1642 48%, #120a1c 80%)",
+  ].join(","),
+  jour: [
+    "radial-gradient(55% 45% at 78% 10%, rgb(255 227 163 / 0.26), transparent 70%)",
+    "radial-gradient(120% 80% at 50% 0%, #5547a0 0%, #2d2163 46%, #150c26 80%)",
+  ].join(","),
+  crepuscule: [
+    "radial-gradient(65% 42% at 50% 80%, rgb(255 132 58 / 0.48), transparent 72%)",
+    "radial-gradient(40% 30% at 24% 70%, rgb(255 61 127 / 0.22), transparent 70%)",
+    "radial-gradient(120% 80% at 50% 0%, #4e1f4f 0%, #2a1236 46%, #120a1c 78%)",
+  ].join(","),
+};
+
+/** Visibilité des étoiles selon l'ambiance. */
+const starsOpacity: Record<Ambiance, number> = {
+  aube: 0.45,
+  jour: 0.2,
+  crepuscule: 0.6,
+  nuit: 1,
+};
 
 /**
  * Scène nocturne générée : halos lumineux, guirlande de fête et collines de
  * la Glâne en parallaxe. Sert de fond aux héros tant qu'aucune photo/vidéo
  * officielle n'est fournie.
+ *
+ * `alive` (héros d'accueil) ajoute : braises, dégradé animé, parallaxe à la
+ * souris (desktop) et ciel qui suit l'heure locale.
  */
 export function NightScene({
   className,
   intensity = 1,
   garland = true,
+  alive = false,
 }: {
   className?: string;
   /** Amplitude de la parallaxe (0 = aucune) */
   intensity?: number;
   garland?: boolean;
+  alive?: boolean;
 }) {
   const ref = useRef<HTMLDivElement>(null);
   const reduce = useReducedMotion();
+  const ambiance = useAmbiance(alive);
+  const pointer = usePointerEffects() && alive;
   const { scrollYProgress } = useScroll({
     target: ref,
     offset: ["start start", "end start"],
@@ -38,10 +77,31 @@ export function NightScene({
   const yNear = useTransform(scrollYProgress, [0, 1], ["0%", `${34 * k}%`]);
   const yGlow = useTransform(scrollYProgress, [0, 1], ["0%", `${-18 * k}%`]);
 
+  // Parallaxe horizontale au déplacement de la souris (desktop uniquement)
+  const mx = useSpring(0, { stiffness: 50, damping: 20 });
+  useEffect(() => {
+    if (!pointer) {
+      mx.set(0);
+      return;
+    }
+    const onMove = (e: PointerEvent) => {
+      if (e.pointerType === "mouse")
+        mx.set(e.clientX / window.innerWidth - 0.5);
+    };
+    window.addEventListener("pointermove", onMove, { passive: true });
+    return () => window.removeEventListener("pointermove", onMove);
+  }, [pointer, mx]);
+  const xGlow = useTransform(mx, (v) => v * 40);
+  const xStars = useTransform(mx, (v) => v * -8);
+  const xFar = useTransform(mx, (v) => v * -12);
+  const xMid = useTransform(mx, (v) => v * -22);
+  const xNear = useTransform(mx, (v) => v * -34);
+
   return (
     <div
       ref={ref}
       aria-hidden
+      data-ambiance={alive ? ambiance : undefined}
       className={cn(
         "pointer-events-none absolute inset-0 overflow-hidden",
         className,
@@ -50,8 +110,24 @@ export function NightScene({
       {/* Ciel */}
       <div className="absolute inset-0 bg-[radial-gradient(120%_80%_at_50%_0%,#3d1d5c_0%,#1c0e2c_45%,#120a1c_75%)]" />
 
+      {/* Ciels selon l'heure (fondu d'opacité ; tous masqués au rendu serveur) */}
+      {alive &&
+        (Object.keys(skies) as Array<keyof typeof skies>).map((key) => (
+          <div
+            key={key}
+            className="absolute inset-0 transition-opacity duration-[1600ms] ease-out"
+            style={{
+              background: skies[key],
+              opacity: ambiance === key ? 1 : 0,
+            }}
+          />
+        ))}
+
+      {/* Dégradé animé, lent et diffus */}
+      {alive && <div className="aurora absolute -inset-[20%] animate-aurora" />}
+
       {/* Halos de lumière */}
-      <motion.div style={{ y: yGlow }} className="absolute inset-0">
+      <motion.div style={{ y: yGlow, x: xGlow }} className="absolute inset-0">
         <div className="absolute top-[18%] left-[8%] size-[42vmax] animate-drift rounded-full bg-coral/30 blur-[90px]" />
         <div
           className="absolute top-[5%] right-[2%] size-[36vmax] animate-drift rounded-full bg-amber/25 blur-[100px]"
@@ -63,22 +139,30 @@ export function NightScene({
         />
       </motion.div>
 
-      <Stars />
+      <motion.div
+        style={{ x: xStars, opacity: starsOpacity[ambiance] }}
+        className="absolute inset-0 transition-opacity duration-[1600ms]"
+      >
+        <Stars />
+      </motion.div>
       {garland && <Garland />}
 
       {/* Collines — de la plus lointaine à la plus proche */}
       <Hill
         y={yFar}
+        x={xFar}
         className="bottom-[14%] text-[#2e1747]"
         d="M0 180 C 140 120 260 150 380 110 C 470 80 520 30 600 40 C 690 52 740 120 860 115 C 990 110 1080 60 1200 90 C 1290 112 1360 100 1440 120 L1440 320 L0 320 Z"
       />
       <Hill
         y={yMid}
+        x={xMid}
         className="bottom-[6%] text-[#22113a]"
         d="M0 210 C 160 170 300 200 460 165 C 600 135 700 175 820 170 C 980 162 1090 120 1240 140 C 1340 152 1400 170 1440 165 L1440 320 L0 320 Z"
       />
       <Hill
         y={yNear}
+        x={xNear}
         className="-bottom-[2%] text-[#120a1c]"
         d="M0 250 C 200 215 360 240 540 222 C 720 205 860 240 1040 228 C 1200 218 1320 236 1440 226 L1440 320 L0 320 Z"
       >
@@ -86,6 +170,17 @@ export function NightScene({
         <path d="M600 226 l18 -22 l18 22 z M636 226 v-14 h26 v14 z M700 224 q46 -40 92 0 z M806 226 l10 -14 l10 14 z" />
         <rect x="741" y="176" width="2" height="12" />
       </Hill>
+
+      {/* Braises montant de la place de fête, devant les collines */}
+      {alive && <Embers />}
+
+      {/* Voile bas en journée : garantit le contraste du texte du héros */}
+      {alive && (
+        <div
+          className="absolute inset-x-0 bottom-0 h-2/3 bg-gradient-to-t from-night/80 via-night/30 to-transparent transition-opacity duration-[1600ms]"
+          style={{ opacity: ambiance === "nuit" ? 0 : 1 }}
+        />
+      )}
     </div>
   );
 }
@@ -93,21 +188,24 @@ export function NightScene({
 function Hill({
   d,
   y,
+  x,
   className,
   children,
 }: {
   d: string;
   y: MotionValue<string>;
+  x: MotionValue<number>;
   className?: string;
   children?: ReactNode;
 }) {
   return (
     <motion.svg
-      style={{ y }}
+      style={{ y, x }}
       viewBox="0 0 1440 320"
       preserveAspectRatio="none"
       className={cn(
-        "absolute left-0 h-[38%] min-h-48 w-full fill-current",
+        // Légèrement plus larges que l'écran : la parallaxe ne révèle aucun bord
+        "absolute -left-[3%] h-[38%] min-h-48 w-[106%] fill-current",
         className,
       )}
     >

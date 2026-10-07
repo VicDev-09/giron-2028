@@ -7,7 +7,7 @@ import { Logo } from "./Logo";
 
 export function Footer() {
   return (
-    <footer className="tone-night grain relative overflow-hidden">
+    <footer className="tone-night grain mesh relative overflow-hidden">
       <div
         aria-hidden
         className="pointer-events-none absolute -bottom-1/2 left-1/2 size-[70vmax] -translate-x-1/2 rounded-full bg-plum-2/60 blur-[140px]"
