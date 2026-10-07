@@ -6,7 +6,7 @@ type Tone = "light" | "sunken" | "night";
 const tones: Record<Tone, string> = {
   light: "bg-surface text-ink",
   sunken: "bg-sunken text-ink",
-  night: "tone-night grain",
+  night: "tone-night grain mesh",
 };
 
 interface SectionProps {
