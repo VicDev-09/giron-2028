@@ -7,15 +7,15 @@ import { SponsorLogo } from "./SponsorLogo";
 const layout: Record<SponsorTier, { grid: string; medal: string }> = {
   or: {
     grid: "grid-cols-1 sm:grid-cols-3",
-    medal: "bg-gradient-to-br from-[#ffe08a] to-amber text-[#1b1225]",
+    medal: "bg-gradient-to-br from-[#ffe08a] to-gold text-deep",
   },
   argent: {
     grid: "grid-cols-2 sm:grid-cols-3",
-    medal: "bg-gradient-to-br from-white to-[#bdb6cc] text-[#1b1225]",
+    medal: "bg-gradient-to-br from-white to-[#bdb6cc] text-deep",
   },
   bronze: {
     grid: "grid-cols-2 sm:grid-cols-4 lg:grid-cols-6",
-    medal: "bg-gradient-to-br from-[#f2b183] to-[#b8703e] text-[#1b1225]",
+    medal: "bg-gradient-to-br from-[#f2b183] to-[#b8703e] text-deep",
   },
 };
 
@@ -55,7 +55,7 @@ export function SponsorWall() {
                     sponsor={s}
                     className={cn(
                       tier.id === "or" &&
-                        "shadow-[0_18px_50px_-28px_rgba(255,178,62,0.9)] ring-2 ring-amber/50",
+                        "shadow-[0_18px_50px_-28px_color-mix(in_srgb,var(--brand-gold)_90%,transparent)] ring-2 ring-gold/50",
                     )}
                     aspect={
                       tier.id === "or"

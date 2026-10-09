@@ -7,7 +7,7 @@ export default function NotFound() {
     <section className="tone-night grain relative isolate flex min-h-svh items-center overflow-hidden pt-24">
       <NightScene className="-z-10" />
       <Container className="text-center">
-        <p className="eyebrow text-amber">Erreur 404</p>
+        <p className="eyebrow text-gold">Erreur 404</p>
         <h1 className="display-xl mt-6 text-[clamp(4rem,18vw,12rem)]">
           <span className="text-gradient">Perdu</span>
         </h1>

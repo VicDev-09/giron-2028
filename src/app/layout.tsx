@@ -38,7 +38,7 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  themeColor: "#120a1c",
+  themeColor: "#0a1030",
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
@@ -55,7 +55,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       <body id="top" className="flex min-h-full flex-col">
         <a
           href="#contenu"
-          className="fixed top-3 left-3 z-[100] -translate-y-24 rounded-full bg-coral px-5 py-3 font-semibold text-night transition-transform focus:translate-y-0"
+          className="fixed top-3 left-3 z-[100] -translate-y-24 rounded-full bg-scarlet px-5 py-3 font-semibold text-white transition-transform focus:translate-y-0"
         >
           Aller au contenu
         </a>

@@ -69,7 +69,7 @@ export function HomeHero() {
       <Container className="flex flex-1 flex-col justify-end gap-12 pt-32 pb-20 lg:grid lg:grid-cols-[1fr_minmax(0,26rem)] lg:items-end lg:gap-16 lg:pb-24">
         <div>
           <p
-            className="eyebrow flex animate-rise items-center gap-3 text-amber"
+            className="eyebrow flex animate-rise items-center gap-3 text-gold"
             style={delay(0.1)}
           >
             <span aria-hidden className="h-px w-10 bg-current" />
@@ -88,11 +88,11 @@ export function HomeHero() {
             style={delay(0.7)}
           >
             <p className="flex items-center gap-2">
-              <CalendarDays aria-hidden className="size-5 text-amber" />
+              <CalendarDays aria-hidden className="size-5 text-gold" />
               {site.datesLabel}
             </p>
             <p className="flex items-center gap-2">
-              <MapPin aria-hidden className="size-5 text-amber" />
+              <MapPin aria-hidden className="size-5 text-gold" />
               {site.place}
             </p>
           </div>

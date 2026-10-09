@@ -1,64 +1,71 @@
 @import "tailwindcss";
 
 /* ==========================================================================
-   Design system Giron 2028 — palette provisoire « Nuit de Glâne »
-   L'identité officielle n'est pas encore fournie : toutes les couleurs sont
-   définies ici, en un seul endroit, pour être remplacées facilement.
+   Design system Giron 2028 — « Nuit britannique »
+   Thème Grande-Bretagne, version moderne : nuit marine, bleu royal électrique,
+   rouge vif, or, crème. L'identité officielle n'est pas encore fournie :
+   TOUTES les couleurs sont définies ici, en un seul endroit, pour être
+   remplacées facilement. Contrastes vérifiés AA (texte) / 3:1 (interface).
    ========================================================================== */
 
 :root {
   /* Couleurs de marque (fixes, quel que soit le thème) */
-  --brand-night: #120a1c; /* nuit profonde — héros, sections immersives */
-  --brand-plum: #2a1440; /* prune — dégradés, collines */
-  --brand-plum-2: #3d1d5c;
-  --brand-coral: #ff5a36; /* corail électrique — énergie, CTA */
-  --brand-amber: #ffb23e; /* ambre chaud — lumières, accents */
-  --brand-cream: #fbf6ef; /* crème — sections claires */
+  --brand-night: #0a1030; /* nuit britannique — héros, sections immersives */
+  --brand-dusk: #17225e; /* indigo — dégradés, collines */
+  --brand-dusk-2: #24348c;
+  --brand-royal: #2b54ff; /* bleu royal électrique — couleur primaire */
+  --brand-royal-soft: #7a98ff; /* bleu lumineux — texte/lumières sur la nuit */
+  --brand-scarlet: #e8173a; /* rouge britannique vif — accent énergique */
+  --brand-gold: #f2c14e; /* or — touches premium, étiquettes sur la nuit */
+  --brand-cream: #f6f3ec; /* crème / blanc cassé — sections claires */
+  --brand-deep: #0b1230; /* encre marine — texte posé sur les couleurs vives */
+  --brand-thistle: #9d7bff; /* chardon d'Écosse — fleur */
+  --brand-thistle-leaf: #3fbf86; /* chardon d'Écosse — feuilles */
 
-  /* Lieux du programme */
-  --venue-cantine: #ff5a36;
-  --venue-tonnelle: #ffb23e;
-  --venue-caveau: #b55cff;
-  --venue-jeux: #2fd4a5;
+  /* Lieux du programme : distincts entre eux, cohérents avec la palette */
+  --venue-cantine: #ff3b55; /* rouge */
+  --venue-tonnelle: #f2c14e; /* or */
+  --venue-caveau: #8b6cff; /* violet royal */
+  --venue-jeux: #1fc48f; /* vert chardon (clin d'œil écossais) */
 
   /* Tokens sémantiques — thème clair (défaut) */
   --bg: var(--brand-cream);
   --bg-elevated: #ffffff;
-  --bg-sunken: #f3ebe0;
-  --fg: #1b1225;
-  --fg-muted: #5a4f66;
-  --border: #e6dccf;
-  --accent: var(--brand-coral);
-  --accent-fg: #1b1225; /* texte posé sur l'accent */
-  --accent-strong: #c2331a; /* accent utilisable en texte (AA sur fond clair) */
-  --ring: #c2331a;
+  --bg-sunken: #eeebe2;
+  --fg: #0f1736;
+  --fg-muted: #4b5470;
+  --border: #e2dfd5;
+  --accent: var(--brand-royal);
+  --accent-fg: #ffffff; /* texte posé sur l'accent */
+  --accent-strong: var(--brand-royal); /* accent utilisable en texte (AA) */
+  --ring: var(--brand-royal);
 
   color-scheme: light;
 }
 
 /* Thème sombre : tokens sémantiques uniquement (choix explicite, puis système) */
 :root[data-theme="dark"] {
-  --bg: #0e0915;
-  --bg-elevated: #1a1224;
-  --bg-sunken: #140d1d;
-  --fg: #f5eee6;
-  --fg-muted: #b8acc4;
-  --border: #2e2339;
-  --accent-strong: #ff7a5c;
-  --ring: #ffb23e;
+  --bg: #070b1f;
+  --bg-elevated: #10183a;
+  --bg-sunken: #0a1029;
+  --fg: #f3f1ea;
+  --fg-muted: #aab3cf;
+  --border: #1e2a55;
+  --accent-strong: var(--brand-royal-soft);
+  --ring: var(--brand-gold);
   color-scheme: dark;
 }
 
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
-    --bg: #0e0915;
-    --bg-elevated: #1a1224;
-    --bg-sunken: #140d1d;
-    --fg: #f5eee6;
-    --fg-muted: #b8acc4;
-    --border: #2e2339;
-    --accent-strong: #ff7a5c;
-    --ring: #ffb23e;
+    --bg: #070b1f;
+    --bg-elevated: #10183a;
+    --bg-sunken: #0a1029;
+    --fg: #f3f1ea;
+    --fg-muted: #aab3cf;
+    --border: #1e2a55;
+    --accent-strong: var(--brand-royal-soft);
+    --ring: var(--brand-gold);
     color-scheme: dark;
   }
 }
@@ -66,13 +73,13 @@
 /* Sections immersives : toujours « nuit », quel que soit le thème */
 .tone-night {
   --bg: var(--brand-night);
-  --bg-elevated: #1d1230;
-  --bg-sunken: #0b0612;
-  --fg: #f7efe6;
-  --fg-muted: #c4b6d3;
-  --border: #33244a;
-  --accent-strong: #ff7a5c;
-  --ring: #ffb23e;
+  --bg-elevated: #121b46;
+  --bg-sunken: #060a1f;
+  --fg: #f5f3ec;
+  --fg-muted: #b6bfdc;
+  --border: #26326b;
+  --accent-strong: var(--brand-royal-soft);
+  --ring: var(--brand-gold);
   color-scheme: dark;
   background-color: var(--bg);
   color: var(--fg);
@@ -90,11 +97,16 @@
   --color-accent-strong: var(--accent-strong);
 
   --color-night: var(--brand-night);
-  --color-plum: var(--brand-plum);
-  --color-plum-2: var(--brand-plum-2);
-  --color-coral: var(--brand-coral);
-  --color-amber: var(--brand-amber);
+  --color-dusk: var(--brand-dusk);
+  --color-dusk-2: var(--brand-dusk-2);
+  --color-royal: var(--brand-royal);
+  --color-royal-soft: var(--brand-royal-soft);
+  --color-scarlet: var(--brand-scarlet);
+  --color-gold: var(--brand-gold);
   --color-cream: var(--brand-cream);
+  --color-deep: var(--brand-deep);
+  --color-thistle: var(--brand-thistle);
+  --color-thistle-leaf: var(--brand-thistle-leaf);
 
   --color-cantine: var(--venue-cantine);
   --color-tonnelle: var(--venue-tonnelle);
@@ -189,8 +201,8 @@
   }
 
   ::selection {
-    background: var(--brand-coral);
-    color: #1b1225;
+    background: var(--brand-scarlet);
+    color: #ffffff;
   }
 
   [id] {
@@ -243,20 +255,24 @@
     background:
       radial-gradient(
         30% 26% at 28% 34%,
-        rgb(255 90 54 / 0.14),
+        color-mix(in srgb, var(--brand-scarlet) 14%, transparent),
         transparent 70%
       ),
       radial-gradient(
         26% 22% at 76% 32%,
-        rgb(255 178 62 / 0.1),
+        color-mix(in srgb, var(--brand-gold) 10%, transparent),
         transparent 70%
       ),
       radial-gradient(
         32% 26% at 64% 64%,
-        rgb(181 92 255 / 0.12),
+        color-mix(in srgb, var(--brand-royal) 12%, transparent),
         transparent 70%
       ),
-      radial-gradient(40% 28% at 36% 62%, rgb(61 29 92 / 0.45), transparent 72%);
+      radial-gradient(
+        40% 28% at 36% 62%,
+        color-mix(in srgb, var(--brand-dusk-2) 45%, transparent),
+        transparent 72%
+      );
   }
 
   @media (min-width: 768px) and (prefers-reduced-motion: no-preference) {
@@ -269,17 +285,17 @@
     background:
       radial-gradient(
         32% 38% at 28% 30%,
-        rgb(255 61 127 / 0.16),
+        color-mix(in srgb, var(--brand-scarlet) 16%, transparent),
         transparent 70%
       ),
       radial-gradient(
         30% 34% at 74% 36%,
-        rgb(181 92 255 / 0.14),
+        color-mix(in srgb, var(--brand-royal) 14%, transparent),
         transparent 70%
       ),
       radial-gradient(
         40% 26% at 50% 62%,
-        rgb(255 178 62 / 0.1),
+        color-mix(in srgb, var(--brand-gold) 10%, transparent),
         transparent 70%
       );
   }
@@ -295,7 +311,7 @@
     aspect-ratio: 1;
     translate: -50% -50%;
     background: repeating-conic-gradient(
-      rgb(255 178 62 / 0.08) 0deg 5deg,
+      color-mix(in srgb, var(--brand-gold) 8%, transparent) 0deg 5deg,
       transparent 5deg 15deg
     );
     -webkit-mask-image: radial-gradient(
@@ -313,12 +329,36 @@
     }
   }
 
+  /* Tartan moderne (clin d'œil écossais) : trame indigo, fils rouges/or */
+  .tartan {
+    background-color: var(--brand-dusk);
+    background-image:
+      repeating-linear-gradient(
+        90deg,
+        color-mix(in srgb, var(--brand-scarlet) 70%, transparent) 0 6px,
+        transparent 6px 16px,
+        color-mix(in srgb, var(--brand-gold) 60%, transparent) 16px 18px,
+        transparent 18px 30px,
+        color-mix(in srgb, var(--brand-royal) 55%, transparent) 30px 40px,
+        transparent 40px 52px
+      ),
+      repeating-linear-gradient(
+        0deg,
+        color-mix(in srgb, var(--brand-scarlet) 70%, transparent) 0 6px,
+        transparent 6px 16px,
+        color-mix(in srgb, var(--brand-gold) 60%, transparent) 16px 18px,
+        transparent 18px 30px,
+        color-mix(in srgb, var(--brand-royal) 55%, transparent) 30px 40px,
+        transparent 40px 52px
+      );
+  }
+
   .text-gradient {
     background: linear-gradient(
       100deg,
-      var(--brand-amber) 0%,
-      var(--brand-coral) 55%,
-      #ff3d7f 100%
+      var(--brand-scarlet) 0%,
+      color-mix(in oklab, var(--brand-scarlet), var(--brand-royal-soft)) 50%,
+      var(--brand-royal-soft) 100%
     );
     -webkit-background-clip: text;
     background-clip: text;
@@ -352,7 +392,11 @@
   bottom: 0.3rem;
   height: 2px;
   border-radius: 2px;
-  background: linear-gradient(90deg, var(--brand-amber), var(--brand-coral));
+  background: linear-gradient(
+    90deg,
+    var(--brand-royal-soft),
+    var(--brand-scarlet)
+  );
   transform: scaleX(0);
   transform-origin: right;
   transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1);
@@ -398,22 +442,23 @@
   width: 8px;
   height: 8px;
   margin: -4px 0 0 -4px;
-  background: var(--brand-coral);
-  box-shadow: 0 0 12px 2px rgb(255 90 54 / 0.55);
+  background: var(--brand-scarlet);
+  box-shadow: 0 0 12px 2px
+    color-mix(in srgb, var(--brand-scarlet) 55%, transparent);
 }
 
 .cursor-ring > span {
   width: 36px;
   height: 36px;
   margin: -18px 0 0 -18px;
-  border: 1.5px solid rgb(255 90 54 / 0.65);
-  background-color: rgb(255 178 62 / 0.08);
+  border: 1.5px solid color-mix(in srgb, var(--brand-scarlet) 65%, transparent);
+  background-color: color-mix(in srgb, var(--brand-gold) 8%, transparent);
 }
 
 :root[data-cursor="hover"] .cursor-ring > span {
   transform: scale(1.6);
-  border-color: rgb(255 178 62 / 0.9);
-  background-color: rgb(255 178 62 / 0.16);
+  border-color: color-mix(in srgb, var(--brand-gold) 90%, transparent);
+  background-color: color-mix(in srgb, var(--brand-gold) 16%, transparent);
 }
 
 :root[data-cursor="hover"] .cursor-dot > span {

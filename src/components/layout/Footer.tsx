@@ -10,7 +10,7 @@ export function Footer() {
     <footer className="tone-night grain mesh relative overflow-hidden">
       <div
         aria-hidden
-        className="pointer-events-none absolute -bottom-1/2 left-1/2 size-[70vmax] -translate-x-1/2 rounded-full bg-plum-2/60 blur-[140px]"
+        className="pointer-events-none absolute -bottom-1/2 left-1/2 size-[70vmax] -translate-x-1/2 rounded-full bg-dusk-2/60 blur-[140px]"
       />
 
       <Container className="relative z-10 pt-20 pb-10">
@@ -22,18 +22,18 @@ export function Footer() {
             </p>
             <ul className="mt-8 space-y-3 text-sm">
               <li className="flex items-center gap-3">
-                <CalendarDays aria-hidden className="size-4 text-amber" />
+                <CalendarDays aria-hidden className="size-4 text-gold" />
                 {site.datesLabel}
               </li>
               <li className="flex items-center gap-3">
-                <MapPin aria-hidden className="size-4 text-amber" />
+                <MapPin aria-hidden className="size-4 text-gold" />
                 {site.place}
               </li>
               <li className="flex items-center gap-3">
-                <Mail aria-hidden className="size-4 text-amber" />
+                <Mail aria-hidden className="size-4 text-gold" />
                 <a
                   href={`mailto:${site.email}`}
-                  className="underline-offset-4 hover:text-amber hover:underline"
+                  className="underline-offset-4 hover:text-gold hover:underline"
                 >
                   {site.email}
                 </a>
@@ -48,7 +48,7 @@ export function Footer() {
                 <li key={item.href}>
                   <Link
                     href={item.href}
-                    className="inline-block text-white/85 transition-[color,transform] duration-300 hover:translate-x-1 hover:text-coral"
+                    className="inline-block text-white/85 transition-[color,transform] duration-300 hover:translate-x-1 hover:text-gold"
                   >
                     {item.label}
                   </Link>
@@ -64,7 +64,7 @@ export function Footer() {
                 <li key={s.name}>
                   <a
                     href={s.href}
-                    className="group flex items-center gap-3 rounded-full border border-white/15 py-2 pr-5 pl-2 text-sm transition-colors hover:border-coral hover:bg-coral hover:text-night"
+                    className="group flex items-center gap-3 rounded-full border border-white/15 py-2 pr-5 pl-2 text-sm transition-colors hover:border-scarlet hover:bg-scarlet hover:text-white"
                   >
                     <span className="grid size-9 place-items-center rounded-full bg-white/10 transition-colors group-hover:bg-night/15">
                       <SocialIcon name={s.name} className="size-4" />

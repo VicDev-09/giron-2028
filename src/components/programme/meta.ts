@@ -39,24 +39,24 @@ export const venueStyles: Record<
     dot: "bg-cantine",
     bar: "from-cantine",
     soft: "bg-cantine/15",
-    glow: "rgba(255, 90, 54, 0.22)",
+    glow: "color-mix(in srgb, var(--venue-cantine) 22%, transparent)",
   },
   tonnelle: {
     dot: "bg-tonnelle",
     bar: "from-tonnelle",
     soft: "bg-tonnelle/20",
-    glow: "rgba(255, 178, 62, 0.25)",
+    glow: "color-mix(in srgb, var(--venue-tonnelle) 25%, transparent)",
   },
   caveau: {
     dot: "bg-caveau",
     bar: "from-caveau",
     soft: "bg-caveau/15",
-    glow: "rgba(181, 92, 255, 0.22)",
+    glow: "color-mix(in srgb, var(--venue-caveau) 22%, transparent)",
   },
   jeux: {
     dot: "bg-jeux",
     bar: "from-jeux",
     soft: "bg-jeux/15",
-    glow: "rgba(47, 212, 165, 0.22)",
+    glow: "color-mix(in srgb, var(--venue-jeux) 22%, transparent)",
   },
 };

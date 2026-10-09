@@ -24,6 +24,17 @@ function countFor(width: number) {
   return 38;
 }
 
+/** Couleur de marque lue dans les tokens CSS, en rgba (le canvas ne lit pas var()). */
+function brand(name: string, alpha: number, fallback: string) {
+  const hex =
+    getComputedStyle(document.documentElement).getPropertyValue(name).trim() ||
+    fallback;
+  const [r, g, b] = (hex.replace("#", "").match(/\w\w/g) ?? []).map((x) =>
+    parseInt(x, 16),
+  );
+  return `rgba(${r}, ${g}, ${b}, ${alpha})`;
+}
+
 /** Halo de braise pré-rendu une fois, puis simplement copié à chaque image. */
 function makeSprite() {
   const size = 64;
@@ -32,10 +43,10 @@ function makeSprite() {
   const ctx = c.getContext("2d");
   if (!ctx) return null;
   const g = ctx.createRadialGradient(32, 32, 0, 32, 32, 32);
-  g.addColorStop(0, "rgba(255, 244, 214, 1)");
-  g.addColorStop(0.18, "rgba(255, 178, 62, 0.9)");
-  g.addColorStop(0.45, "rgba(255, 90, 54, 0.35)");
-  g.addColorStop(1, "rgba(255, 90, 54, 0)");
+  g.addColorStop(0, "rgba(255, 248, 230, 1)");
+  g.addColorStop(0.18, brand("--brand-gold", 0.9, "#f2c14e"));
+  g.addColorStop(0.45, brand("--brand-scarlet", 0.35, "#e8173a"));
+  g.addColorStop(1, brand("--brand-scarlet", 0, "#e8173a"));
   ctx.fillStyle = g;
   ctx.fillRect(0, 0, size, size);
   return c;

@@ -59,11 +59,11 @@ export function LineupPoster() {
       className="tone-night grain relative overflow-hidden py-20 sm:py-28"
     >
       <Container className="relative z-10">
-        <div className="relative isolate overflow-hidden rounded-[2rem] border border-white/10 bg-[radial-gradient(120%_70%_at_50%_0%,#3d1d5c_0%,#1c0e2c_55%,#120a1c_100%)] px-5 py-14 text-center sm:rounded-[2.5rem] sm:px-12 sm:py-20">
+        <div className="relative isolate overflow-hidden rounded-[2rem] border border-white/10 bg-[radial-gradient(120%_70%_at_50%_0%,var(--brand-dusk-2)_0%,var(--brand-dusk)_45%,var(--brand-night)_100%)] px-5 py-14 text-center sm:rounded-[2.5rem] sm:px-12 sm:py-20">
           <div aria-hidden className="poster-rays absolute inset-0 -z-10" />
           <div
             aria-hidden
-            className="absolute -bottom-1/3 left-1/2 -z-10 size-[60vmax] -translate-x-1/2 rounded-full bg-coral/20 blur-[120px]"
+            className="absolute -bottom-1/3 left-1/2 -z-10 size-[60vmax] -translate-x-1/2 rounded-full bg-scarlet/20 blur-[120px]"
           />
 
           {/* En-tête d'affiche */}
@@ -90,7 +90,7 @@ export function LineupPoster() {
             <motion.h2
               id="titre-affiche"
               variants={fadeUp}
-              className="eyebrow mt-6 text-amber"
+              className="eyebrow mt-6 text-gold"
             >
               L&apos;affiche du {site.name}
             </motion.h2>
@@ -128,7 +128,7 @@ export function LineupPoster() {
                       {i > 0 && (
                         <Sparkle
                           aria-hidden
-                          className="size-3 fill-coral text-coral sm:size-4"
+                          className="size-3 fill-scarlet text-scarlet sm:size-4"
                         />
                       )}
                       <ActName act={act} />
@@ -256,7 +256,7 @@ function Headliner({ act }: { act: LineupAct }) {
             transition: { duration: 1.6, ease: "easeOut", delay: 0.4 },
           },
         }}
-        className="pointer-events-none absolute inset-x-[10%] top-1/4 bottom-0 -z-10 rounded-full bg-[radial-gradient(closest-side,rgb(255_61_127/0.45),rgb(255_90_54/0.2)_55%,transparent)] blur-2xl"
+        className="pointer-events-none absolute inset-x-[10%] top-1/4 bottom-0 -z-10 rounded-full bg-[radial-gradient(closest-side,color-mix(in_srgb,var(--brand-royal-soft)_45%,transparent),color-mix(in_srgb,var(--brand-scarlet)_20%,transparent)_55%,transparent)] blur-2xl"
       />
       <p className="display-xl relative inline-block text-[clamp(3.2rem,15vw,11rem)]">
         <span className="sr-only">

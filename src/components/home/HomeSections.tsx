@@ -30,7 +30,7 @@ const keywords = [
 /** Bandeau corail de mots-clés défilants. */
 export function KeywordBand() {
   return (
-    <div className="relative z-10 -my-6 -rotate-2 bg-coral py-5 text-[#1b1225] shadow-2xl sm:py-6">
+    <div className="relative z-10 -my-6 -rotate-2 bg-scarlet py-5 text-white shadow-2xl sm:py-6">
       <Marquee duration={32}>
         {keywords.map((word) => (
           <span
@@ -223,7 +223,7 @@ export function CallsToAction() {
       title: "Vis le Giron de l'intérieur",
       text: "Bar, cantine, montage, accueil… Rejoins l'équipe qui fait la fête.",
       cta: "Je m'annonce",
-      gradient: "from-coral via-[#ff3d7f] to-plum-2",
+      gradient: "from-scarlet via-scarlet to-dusk-2",
     },
     {
       href: "/sponsors",
@@ -232,7 +232,7 @@ export function CallsToAction() {
       title: "Associez votre nom à la fête",
       text: "Des milliers de visiteurs, une région entière : devenez partenaire du Giron 2028.",
       cta: "Devenir partenaire",
-      gradient: "from-amber via-coral to-plum",
+      gradient: "from-royal via-royal to-dusk",
     },
   ];
 
@@ -257,14 +257,14 @@ export function CallsToAction() {
                 className="absolute inset-0 -z-10 bg-[radial-gradient(circle_at_80%_20%,rgba(255,255,255,0.35),transparent_45%)]"
               />
               <div className="flex items-start justify-between">
-                <span className="grid size-14 place-items-center rounded-2xl bg-night/20 text-[#1b1225] backdrop-blur">
+                <span className="grid size-14 place-items-center rounded-2xl bg-white/15 text-white backdrop-blur">
                   <c.icon aria-hidden className="size-7" />
                 </span>
                 <span className="grid size-14 place-items-center rounded-full bg-night text-white transition-transform duration-500 group-hover:rotate-45">
                   <ArrowUpRight aria-hidden className="size-6" />
                 </span>
               </div>
-              <div className="text-[#1b1225]">
+              <div className="text-white">
                 <p className="eyebrow">{c.eyebrow}</p>
                 <h2 className="mt-3 font-display text-4xl leading-[0.95] font-extrabold tracking-tight sm:text-5xl">
                   {c.title}
@@ -333,7 +333,7 @@ export function SocialSection() {
               href={s.href}
               className="group flex items-center gap-4 rounded-full border-2 border-ink py-2 pr-7 pl-2 font-semibold transition-[background-color,color,transform] duration-300 hover:-translate-y-1 hover:bg-ink hover:text-surface"
             >
-              <span className="grid size-12 place-items-center rounded-full bg-coral text-[#1b1225] transition-transform duration-500 group-hover:rotate-[-12deg]">
+              <span className="grid size-12 place-items-center rounded-full bg-scarlet text-white transition-transform duration-500 group-hover:rotate-[-12deg]">
                 <SocialIcon name={s.name} />
               </span>
               <span className="text-left">

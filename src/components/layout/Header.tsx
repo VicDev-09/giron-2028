@@ -190,7 +190,7 @@ function MobileMenu({
     >
       <div
         aria-hidden
-        className="pointer-events-none absolute -top-1/4 -right-1/4 size-[80vmax] rounded-full bg-coral/25 blur-[120px]"
+        className="pointer-events-none absolute -top-1/4 -right-1/4 size-[80vmax] rounded-full bg-scarlet/25 blur-[120px]"
       />
       <div className="relative flex h-19 items-center justify-between px-6 pt-3">
         <Link href="/" onClick={onClose} aria-label={`${site.name} — accueil`}>
@@ -224,7 +224,7 @@ function MobileMenu({
                   aria-current={active ? "page" : undefined}
                   className={cn(
                     "group flex items-baseline gap-4 py-1.5 font-display text-4xl font-extrabold tracking-tight transition-colors sm:text-5xl",
-                    active ? "text-coral" : "text-white hover:text-amber",
+                    active ? "text-scarlet" : "text-white hover:text-gold",
                   )}
                 >
                   <span
@@ -256,7 +256,7 @@ function MobileMenu({
               key={s.name}
               href={s.href}
               aria-label={s.name}
-              className="grid size-11 place-items-center rounded-full border border-white/15 text-white transition-colors hover:border-coral hover:bg-coral hover:text-night"
+              className="grid size-11 place-items-center rounded-full border border-white/15 text-white transition-colors hover:border-scarlet hover:bg-scarlet hover:text-white"
             >
               <SocialIcon name={s.name} />
             </a>

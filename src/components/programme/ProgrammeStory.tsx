@@ -164,8 +164,8 @@ export function ProgrammeStory() {
         <div className="relative py-20 sm:py-28 lg:motion-safe:sticky lg:motion-safe:top-0 lg:motion-safe:flex lg:motion-safe:h-svh lg:motion-safe:flex-col lg:motion-safe:justify-center lg:motion-safe:overflow-hidden lg:motion-safe:py-0">
           {/* Halos fixes de la scène épinglée */}
           <div aria-hidden className="pointer-events-none absolute inset-0">
-            <div className="absolute -top-1/4 left-[10%] size-[40vmax] rounded-full bg-coral/15 blur-[110px]" />
-            <div className="absolute right-[5%] -bottom-1/3 size-[36vmax] rounded-full bg-[#b55cff]/12 blur-[110px]" />
+            <div className="absolute -top-1/4 left-[10%] size-[40vmax] rounded-full bg-scarlet/15 blur-[110px]" />
+            <div className="absolute right-[5%] -bottom-1/3 size-[36vmax] rounded-full bg-royal/15 blur-[110px]" />
           </div>
 
           <motion.ol
@@ -209,7 +209,7 @@ export function ProgrammeStory() {
                   key={m.day}
                   className={cn(
                     "absolute top-0 -translate-x-1/2 text-xs font-semibold tracking-[0.2em] uppercase transition-colors duration-300",
-                    i <= activeDay ? "text-amber" : "text-white/40",
+                    i <= activeDay ? "text-gold" : "text-white/40",
                   )}
                   style={{ left: `${m.at * 100}%` }}
                 >
@@ -220,7 +220,7 @@ export function ProgrammeStory() {
             <div className="h-px bg-white/15">
               <motion.div
                 style={{ scaleX: scrollYProgress }}
-                className="h-full origin-left bg-gradient-to-r from-amber via-coral to-[#ff3d7f]"
+                className="h-full origin-left bg-gradient-to-r from-scarlet via-royal to-royal-soft"
               />
             </div>
           </div>
@@ -237,7 +237,7 @@ function PanelContent({ panel }: { panel: Panel }) {
         <div className="flex h-full flex-col justify-center pb-6 md:max-w-3xl lg:motion-safe:pb-0">
           <motion.p
             variants={item}
-            className="eyebrow mb-5 flex items-center gap-3 text-amber"
+            className="eyebrow mb-5 flex items-center gap-3 text-gold"
           >
             <span aria-hidden className="h-px w-8 bg-current" />
             {recitIntro.eyebrow}
@@ -271,7 +271,7 @@ function PanelContent({ panel }: { panel: Panel }) {
       const recit = recitDays[panel.day];
       return (
         <div className="flex h-full flex-col justify-end border-t border-white/15 pt-10 lg:motion-safe:border-t-0 lg:motion-safe:border-l lg:motion-safe:pt-0 lg:motion-safe:pb-10 lg:motion-safe:pl-[2vw]">
-          <motion.p variants={item} className="eyebrow text-amber">
+          <motion.p variants={item} className="eyebrow text-gold">
             {recit.kicker}
           </motion.p>
           <motion.h3
@@ -364,7 +364,7 @@ function PanelContent({ panel }: { panel: Panel }) {
     case "outro":
       return (
         <div className="flex h-full flex-col justify-center rounded-[2rem] border border-dashed border-white/20 p-8 sm:p-10">
-          <motion.p variants={item} className="eyebrow text-amber">
+          <motion.p variants={item} className="eyebrow text-gold">
             Et maintenant
           </motion.p>
           <motion.p

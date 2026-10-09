@@ -12,10 +12,10 @@ const base =
 
 // Halo lumineux du CTA principal : pseudo-élément flouté, révélé au survol
 const halo =
-  "isolate before:pointer-events-none before:absolute before:-inset-2 before:-z-10 before:rounded-full before:bg-amber/45 before:opacity-0 before:blur-xl before:transition-opacity before:duration-500 hover:before:opacity-100";
+  "isolate before:pointer-events-none before:absolute before:-inset-2 before:-z-10 before:rounded-full before:bg-royal-soft/45 before:opacity-0 before:blur-xl before:transition-opacity before:duration-500 hover:before:opacity-100";
 
 const variants: Record<Variant, string> = {
-  primary: `${halo} bg-coral text-[#1b1225] shadow-[0_8px_30px_-8px_rgba(255,90,54,0.65)] hover:-translate-y-0.5 hover:bg-amber hover:shadow-[0_14px_40px_-10px_rgba(255,178,62,0.8)]`,
+  primary: `${halo} bg-royal text-white shadow-[0_8px_30px_-8px_color-mix(in_srgb,var(--brand-royal)_70%,transparent)] hover:-translate-y-0.5 hover:bg-scarlet hover:shadow-[0_14px_40px_-10px_color-mix(in_srgb,var(--brand-scarlet)_75%,transparent)]`,
   secondary:
     "border-2 border-current text-ink hover:-translate-y-0.5 hover:bg-ink hover:text-surface",
   ghost: "text-ink underline-offset-4 hover:text-accent-strong hover:underline",

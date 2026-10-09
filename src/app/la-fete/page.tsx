@@ -67,10 +67,10 @@ export default function LaFetePage() {
               <Reveal as="li" key={h.kind}>
                 <article
                   className={cn(
-                    "group grid items-center gap-6 rounded-[2rem] border border-white/10 bg-white/[0.04] p-6 transition-[background-color,border-color] duration-500 hover:border-coral/50 hover:bg-white/[0.07] sm:grid-cols-[auto_1fr_auto] sm:gap-10 sm:p-10",
+                    "group grid items-center gap-6 rounded-[2rem] border border-white/10 bg-white/[0.04] p-6 transition-[background-color,border-color] duration-500 hover:border-scarlet/50 hover:bg-white/[0.07] sm:grid-cols-[auto_1fr_auto] sm:gap-10 sm:p-10",
                   )}
                 >
-                  <span className="display-xl text-6xl text-white/20 transition-colors duration-500 group-hover:text-coral sm:text-8xl">
+                  <span className="display-xl text-6xl text-white/20 transition-colors duration-500 group-hover:text-scarlet sm:text-8xl">
                     0{i + 1}
                   </span>
                   <div>
@@ -80,11 +80,11 @@ export default function LaFetePage() {
                     <p className="mt-3 max-w-2xl text-lg leading-relaxed text-white/80">
                       {h.text}
                     </p>
-                    <p className="mt-4 text-sm font-semibold text-amber">
+                    <p className="mt-4 text-sm font-semibold text-gold">
                       {h.detail}
                     </p>
                   </div>
-                  <span className="hidden size-20 place-items-center rounded-full bg-white/[0.06] transition-[transform,background-color] duration-500 group-hover:scale-110 group-hover:-rotate-12 group-hover:bg-coral group-hover:text-night sm:grid">
+                  <span className="hidden size-20 place-items-center rounded-full bg-white/[0.06] transition-[transform,background-color] duration-500 group-hover:scale-110 group-hover:-rotate-12 group-hover:bg-scarlet group-hover:text-night sm:grid">
                     <Icon aria-hidden className="size-9" />
                   </span>
                 </article>

@@ -68,11 +68,11 @@ export default function SponsorsPage() {
           {tiers.map((tier, i) => (
             <StaggerItem key={tier.id}>
               <SpotlightCard
-                className={cn("h-full p-8", i === 0 && "ring-2 ring-amber/60")}
-                color="rgba(255, 178, 62, 0.18)"
+                className={cn("h-full p-8", i === 0 && "ring-2 ring-gold/60")}
+                color="color-mix(in srgb, var(--brand-gold) 18%, transparent)"
               >
                 {i === 0 && (
-                  <p className="eyebrow mb-4 inline-block rounded-full bg-amber px-3 py-1 text-[#1b1225]">
+                  <p className="eyebrow mb-4 inline-block rounded-full bg-gold px-3 py-1 text-deep">
                     Visibilité maximale
                   </p>
                 )}
@@ -85,7 +85,7 @@ export default function SponsorsPage() {
                     <li key={perk} className="flex gap-3 text-white/85">
                       <Check
                         aria-hidden
-                        className="mt-0.5 size-5 shrink-0 text-coral"
+                        className="mt-0.5 size-5 shrink-0 text-scarlet"
                       />
                       {perk}
                     </li>

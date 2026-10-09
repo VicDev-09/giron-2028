@@ -11,7 +11,7 @@ import { tiltMove, tiltReset } from "./tilt";
 export function SpotlightCard({
   children,
   className,
-  color = "rgba(255, 90, 54, 0.22)",
+  color = "color-mix(in srgb, var(--brand-scarlet) 22%, transparent)",
 }: {
   children: ReactNode;
   className?: string;
@@ -22,7 +22,7 @@ export function SpotlightCard({
       onPointerMove={tiltMove}
       onPointerLeave={tiltReset}
       className={cn(
-        "tilt group/spot relative isolate overflow-hidden rounded-3xl border border-line bg-elevated transition-[transform,border-color,box-shadow] duration-500 ease-out hover:-translate-y-1 hover:border-accent/60 hover:shadow-[0_24px_60px_-30px_rgba(255,90,54,0.55)]",
+        "tilt group/spot relative isolate overflow-hidden rounded-3xl border border-line bg-elevated transition-[transform,border-color,box-shadow] duration-500 ease-out hover:-translate-y-1 hover:border-accent/60 hover:shadow-[0_24px_60px_-30px_color-mix(in_srgb,var(--brand-scarlet)_55%,transparent)]",
         className,
       )}
     >

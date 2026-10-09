@@ -58,7 +58,7 @@ export function MailtoForm({
   }
 
   const inputClass =
-    "mt-2 w-full rounded-2xl border border-line bg-elevated px-4 py-3.5 text-base text-ink transition-[border-color,box-shadow] outline-none placeholder:text-muted/70 focus:border-accent focus:shadow-[0_0_0_4px_rgba(255,90,54,0.2)]";
+    "mt-2 w-full rounded-2xl border border-line bg-elevated px-4 py-3.5 text-base text-ink transition-[border-color,box-shadow] outline-none placeholder:text-muted/70 focus:border-accent focus:shadow-[0_0_0_4px_color-mix(in_srgb,var(--brand-scarlet)_20%,transparent)]";
 
   return (
     <form onSubmit={onSubmit} className="grid gap-5 sm:grid-cols-2">

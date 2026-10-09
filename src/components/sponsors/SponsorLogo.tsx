@@ -6,7 +6,7 @@ import { cn } from "@/lib/cn";
 import { tiltMove, tiltReset } from "@/components/ui/tilt";
 
 const tierAccent = {
-  or: "from-amber/35 to-amber/5 text-amber",
+  or: "from-gold/35 to-gold/5 text-gold",
   argent: "from-[#c9c3d6]/35 to-[#c9c3d6]/5 text-[#8a829c]",
   bronze: "from-[#d98a52]/35 to-[#d98a52]/5 text-[#b8703e]",
 } as const;
@@ -29,7 +29,7 @@ export function SponsorLogo({
       onPointerMove={tiltMove}
       onPointerLeave={tiltReset}
       className={cn(
-        "tilt group/logo relative flex items-center justify-center overflow-hidden rounded-2xl border border-line bg-elevated p-5 transition-[transform,border-color,box-shadow] duration-500 hover:-translate-y-1 hover:border-accent/50 hover:shadow-[0_20px_50px_-25px_rgba(255,90,54,0.6)]",
+        "tilt group/logo relative flex items-center justify-center overflow-hidden rounded-2xl border border-line bg-elevated p-5 transition-[transform,border-color,box-shadow] duration-500 hover:-translate-y-1 hover:border-accent/50 hover:shadow-[0_20px_50px_-25px_color-mix(in_srgb,var(--brand-scarlet)_60%,transparent)]",
         aspect,
         className,
       )}

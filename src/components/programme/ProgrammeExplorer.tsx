@@ -67,13 +67,13 @@ export function ProgrammeExplorer() {
                     onClick={() => setDay(d.id)}
                     className={cn(
                       "relative isolate shrink-0 rounded-full px-4 py-2.5 text-sm font-semibold transition-colors",
-                      active ? "text-[#1b1225]" : "text-ink hover:bg-sunken",
+                      active ? "text-white" : "text-ink hover:bg-sunken",
                     )}
                   >
                     {active && (
                       <motion.span
                         layoutId="day-pill"
-                        className="absolute inset-0 -z-10 rounded-full bg-coral"
+                        className="absolute inset-0 -z-10 rounded-full bg-royal"
                         transition={{
                           type: "spring",
                           bounce: 0.2,
@@ -114,7 +114,7 @@ export function ProgrammeExplorer() {
                       venueStyles[v.id].dot,
                     )}
                   >
-                    {active && <Check className="size-3 text-[#1b1225]" />}
+                    {active && <Check className="size-3 text-deep" />}
                   </span>
                   {v.label}
                 </button>
