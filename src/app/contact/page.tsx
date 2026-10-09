@@ -7,6 +7,7 @@ import {
   type LucideIcon,
 } from "lucide-react";
 import { site } from "@/content/site";
+import { PhoneBooth } from "@/components/contact/PhoneBooth";
 import { MailtoForm } from "@/components/forms/MailtoForm";
 import { PageHero } from "@/components/layout/PageHero";
 import { Reveal, Stagger, StaggerItem } from "@/components/ui/Reveal";
@@ -61,34 +62,53 @@ export default function ContactPage() {
       />
 
       <Section aria-labelledby="titre-coordonnees">
-        <h2 id="titre-coordonnees" className="sr-only">
-          Coordonnées
-        </h2>
-        <Stagger className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-          {channels.map((c) => (
-            <StaggerItem key={c.title}>
-              <SpotlightCard className="h-full p-6">
-                <c.icon aria-hidden className="size-8 text-accent-strong" />
-                <h3 className="mt-8 text-sm font-semibold text-muted">
-                  {c.title}
-                </h3>
-                {c.href ? (
-                  <a
-                    href={c.href}
-                    className="mt-1 block font-display text-lg font-bold underline-offset-4 hover:text-accent-strong hover:underline"
-                  >
-                    {c.value.split("@")[0]}
-                    <wbr />@{c.value.split("@")[1]}
-                  </a>
-                ) : (
-                  <p className="mt-1 font-display text-lg font-bold">
-                    {c.value}
-                  </p>
-                )}
-              </SpotlightCard>
-            </StaggerItem>
-          ))}
-        </Stagger>
+        <div className="grid items-center gap-14 lg:grid-cols-12 lg:gap-12">
+          {/* Cabine téléphonique : illustration centrale (cliquable) */}
+          <Reveal className="flex justify-center lg:col-span-5">
+            <PhoneBooth className="h-[22rem] sm:h-[28rem] lg:h-[34rem]" />
+          </Reveal>
+
+          <div className="lg:col-span-7">
+            <SectionHeading
+              id="titre-coordonnees"
+              eyebrow="Ligne directe"
+              title={
+                <>
+                  Appelle-nous…{" "}
+                  <span className="text-accent-strong">
+                    enfin, écris-nous&nbsp;!
+                  </span>
+                </>
+              }
+              intro="La cabine est toujours ouverte : choisis la bonne ligne, on te répond vite."
+            />
+            <Stagger className="mt-10 grid gap-4 sm:grid-cols-2">
+              {channels.map((c) => (
+                <StaggerItem key={c.title}>
+                  <SpotlightCard className="h-full p-6">
+                    <c.icon aria-hidden className="size-8 text-accent-strong" />
+                    <h3 className="mt-6 text-sm font-semibold text-muted">
+                      {c.title}
+                    </h3>
+                    {c.href ? (
+                      <a
+                        href={c.href}
+                        className="mt-1 block font-display text-lg font-bold underline-offset-4 hover:text-accent-strong hover:underline"
+                      >
+                        {c.value.split("@")[0]}
+                        <wbr />@{c.value.split("@")[1]}
+                      </a>
+                    ) : (
+                      <p className="mt-1 font-display text-lg font-bold">
+                        {c.value}
+                      </p>
+                    )}
+                  </SpotlightCard>
+                </StaggerItem>
+              ))}
+            </Stagger>
+          </div>
+        </div>
       </Section>
 
       <Section tone="sunken" aria-labelledby="titre-message">
