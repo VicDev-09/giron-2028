@@ -12,6 +12,7 @@ import { useEffect, useRef, type ReactNode } from "react";
 import { useAmbiance, type Ambiance } from "@/lib/ambiance";
 import { cn } from "@/lib/cn";
 import { usePointerEffects } from "@/lib/media";
+import { LondonSkyline } from "./british/LondonSkyline";
 import { Embers } from "./Embers";
 
 /**
@@ -20,17 +21,17 @@ import { Embers } from "./Embers";
  */
 const skies: Record<Exclude<Ambiance, "nuit">, string> = {
   aube: [
-    "radial-gradient(70% 45% at 18% 78%, rgb(255 138 150 / 0.42), transparent 70%)",
-    "radial-gradient(120% 80% at 50% 0%, #4d2f6e 0%, #2a1642 48%, #120a1c 80%)",
+    "radial-gradient(70% 45% at 18% 78%, rgb(255 150 160 / 0.38), transparent 70%)",
+    "radial-gradient(120% 80% at 50% 0%, #3b418f 0%, #1b2259 48%, var(--brand-night) 80%)",
   ].join(","),
   jour: [
-    "radial-gradient(55% 45% at 78% 10%, rgb(255 227 163 / 0.26), transparent 70%)",
-    "radial-gradient(120% 80% at 50% 0%, #5547a0 0%, #2d2163 46%, #150c26 80%)",
+    "radial-gradient(55% 45% at 78% 10%, rgb(255 238 196 / 0.24), transparent 70%)",
+    "radial-gradient(120% 80% at 50% 0%, #3a5ccc 0%, #1d2d7a 46%, #0b1236 80%)",
   ].join(","),
   crepuscule: [
-    "radial-gradient(65% 42% at 50% 80%, rgb(255 132 58 / 0.48), transparent 72%)",
-    "radial-gradient(40% 30% at 24% 70%, rgb(255 61 127 / 0.22), transparent 70%)",
-    "radial-gradient(120% 80% at 50% 0%, #4e1f4f 0%, #2a1236 46%, #120a1c 78%)",
+    "radial-gradient(65% 42% at 50% 80%, rgb(245 128 72 / 0.45), transparent 72%)",
+    "radial-gradient(40% 30% at 24% 70%, color-mix(in srgb, var(--brand-scarlet) 24%, transparent), transparent 70%)",
+    "radial-gradient(120% 80% at 50% 0%, #4a1f4e 0%, #22183f 46%, var(--brand-night) 78%)",
   ].join(","),
 };
 
@@ -108,7 +109,7 @@ export function NightScene({
       )}
     >
       {/* Ciel */}
-      <div className="absolute inset-0 bg-[radial-gradient(120%_80%_at_50%_0%,#3d1d5c_0%,#1c0e2c_45%,#120a1c_75%)]" />
+      <div className="absolute inset-0 bg-[radial-gradient(120%_80%_at_50%_0%,var(--brand-dusk-2)_0%,var(--brand-dusk)_42%,var(--brand-night)_75%)]" />
 
       {/* Ciels selon l'heure (fondu d'opacité ; tous masqués au rendu serveur) */}
       {alive &&
@@ -128,13 +129,13 @@ export function NightScene({
 
       {/* Halos de lumière */}
       <motion.div style={{ y: yGlow, x: xGlow }} className="absolute inset-0">
-        <div className="absolute top-[18%] left-[8%] size-[42vmax] animate-drift rounded-full bg-coral/30 blur-[90px]" />
+        <div className="absolute top-[18%] left-[8%] size-[42vmax] animate-drift rounded-full bg-scarlet/25 blur-[90px]" />
         <div
-          className="absolute top-[5%] right-[2%] size-[36vmax] animate-drift rounded-full bg-amber/25 blur-[100px]"
+          className="absolute top-[5%] right-[2%] size-[36vmax] animate-drift rounded-full bg-royal/35 blur-[100px]"
           style={{ animationDelay: "-6s" }}
         />
         <div
-          className="absolute bottom-[10%] left-[40%] size-[30vmax] animate-drift rounded-full bg-[#ff3d7f]/20 blur-[90px]"
+          className="absolute bottom-[10%] left-[40%] size-[30vmax] animate-drift rounded-full bg-gold/12 blur-[90px]"
           style={{ animationDelay: "-11s" }}
         />
       </motion.div>
@@ -151,19 +152,29 @@ export function NightScene({
       <Hill
         y={yFar}
         x={xFar}
-        className="bottom-[14%] text-[#2e1747]"
+        className="bottom-[14%] text-[color-mix(in_oklab,var(--brand-dusk-2)_55%,var(--brand-night))]"
         d="M0 180 C 140 120 260 150 380 110 C 470 80 520 30 600 40 C 690 52 740 120 860 115 C 990 110 1080 60 1200 90 C 1290 112 1360 100 1440 120 L1440 320 L0 320 Z"
       />
+      {/* Accent britannique : Londres au loin, dans la vallée (accueil) */}
+      {alive && (
+        <motion.div
+          style={{ y: yFar, x: xFar }}
+          className="absolute -left-[3%] bottom-[20%] h-[22%] min-h-28 w-[106%] text-[color-mix(in_oklab,var(--brand-dusk-2)_42%,var(--brand-night))]"
+        >
+          <LondonSkyline className="size-full" />
+        </motion.div>
+      )}
+
       <Hill
         y={yMid}
         x={xMid}
-        className="bottom-[6%] text-[#22113a]"
+        className="bottom-[6%] text-[color-mix(in_oklab,var(--brand-dusk)_70%,var(--brand-night))]"
         d="M0 210 C 160 170 300 200 460 165 C 600 135 700 175 820 170 C 980 162 1090 120 1240 140 C 1340 152 1400 170 1440 165 L1440 320 L0 320 Z"
       />
       <Hill
         y={yNear}
         x={xNear}
-        className="-bottom-[2%] text-[#120a1c]"
+        className="-bottom-[2%] text-night"
         d="M0 250 C 200 215 360 240 540 222 C 720 205 860 240 1040 228 C 1200 218 1320 236 1440 226 L1440 320 L0 320 Z"
       >
         {/* Petite silhouette de village et de tente de fête */}
@@ -254,7 +265,12 @@ function Stars() {
   );
 }
 
-const bulbColors = ["#ffb23e", "#ff5a36", "#ffe3a3", "#ff3d7f"];
+const bulbColors = [
+  "var(--brand-gold)",
+  "var(--brand-scarlet)",
+  "#fff6dc",
+  "var(--brand-royal-soft)",
+];
 
 /** Guirlande lumineuse suspendue en haut de la scène. */
 function Garland() {
@@ -283,9 +299,10 @@ function Garland() {
           cy={b.y + 0.9}
           rx="0.45"
           ry="0.9"
-          fill={bulbColors[b.i % bulbColors.length]}
           className="animate-twinkle"
           style={{
+            // var() dans un attribut SVG n'est pas fiable partout : style
+            fill: bulbColors[b.i % bulbColors.length],
             animationDelay: `${(b.i % 5) * -0.7}s`,
             filter: `drop-shadow(0 0 1.2px ${bulbColors[b.i % bulbColors.length]})`,
           }}

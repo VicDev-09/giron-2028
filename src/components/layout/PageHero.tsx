@@ -10,18 +10,35 @@ export function PageHero({
   title,
   intro,
   children,
+  ornament,
+  band,
 }: {
   eyebrow: string;
   title: ReactNode;
   intro?: ReactNode;
   children?: ReactNode;
+  /** Petit motif au-dessus du surtitre (accent britannique de la page) */
+  ornament?: ReactNode;
+  /** Bandeau décoratif au pied du héros */
+  band?: "tartan";
 }) {
   return (
     <section className="tone-night grain relative isolate flex min-h-[72svh] items-end overflow-hidden pt-32 pb-20 sm:min-h-[78svh] sm:pb-28">
       <NightScene intensity={0.8} className="-z-10" />
+      {band === "tartan" && (
+        <div
+          aria-hidden
+          className="tartan absolute inset-x-0 bottom-0 h-3 opacity-90 sm:h-4"
+        />
+      )}
       <Container>
+        {ornament && (
+          <div className="mb-6 animate-rise" style={rise(0)}>
+            {ornament}
+          </div>
+        )}
         <p
-          className="eyebrow mb-6 flex animate-rise items-center gap-3 text-amber"
+          className="eyebrow mb-6 flex animate-rise items-center gap-3 text-gold"
           style={rise(0)}
         >
           <span aria-hidden className="h-px w-10 bg-current" />

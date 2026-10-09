@@ -1,6 +1,7 @@
 import type { ReactNode } from "react";
 import { cn } from "@/lib/cn";
 import { Reveal } from "./Reveal";
+import { TubeSign } from "./british/motifs";
 
 interface SectionHeadingProps {
   eyebrow?: string;
@@ -8,6 +9,8 @@ interface SectionHeadingProps {
   intro?: ReactNode;
   id?: string;
   align?: "left" | "center";
+  /** « tube » : surtitre en panneau de métro londonien (Infos pratiques) */
+  variant?: "default" | "tube";
   className?: string;
 }
 
@@ -17,6 +20,7 @@ export function SectionHeading({
   intro,
   id,
   align = "left",
+  variant = "default",
   className,
 }: SectionHeadingProps) {
   return (
@@ -29,10 +33,16 @@ export function SectionHeading({
     >
       {eyebrow && (
         <Reveal>
-          <p className="eyebrow mb-4 flex items-center gap-3 text-accent-strong">
-            <span aria-hidden className="h-px w-8 bg-current" />
-            {eyebrow}
-          </p>
+          {variant === "tube" ? (
+            <p className="eyebrow mb-5">
+              <TubeSign>{eyebrow}</TubeSign>
+            </p>
+          ) : (
+            <p className="eyebrow mb-4 flex items-center gap-3 text-accent-strong">
+              <span aria-hidden className="h-px w-8 bg-current" />
+              {eyebrow}
+            </p>
+          )}
         </Reveal>
       )}
       <Reveal delay={0.05}>

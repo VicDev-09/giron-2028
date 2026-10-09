@@ -84,7 +84,7 @@ export default function InfosPratiquesPage() {
               <li key={s.id}>
                 <a
                   href={`#${s.id}`}
-                  className="block rounded-full border border-white/20 px-4 py-2 text-sm font-semibold text-white/90 transition-colors hover:border-coral hover:bg-coral hover:text-night"
+                  className="block rounded-full border border-white/20 px-4 py-2 text-sm font-semibold text-white/90 transition-colors hover:border-scarlet hover:bg-scarlet hover:text-white"
                 >
                   {s.label}
                 </a>
@@ -97,6 +97,7 @@ export default function InfosPratiquesPage() {
       {/* Accès + parking */}
       <Section id="acces" aria-labelledby="titre-acces">
         <SectionHeading
+          variant="tube"
           id="titre-acces"
           eyebrow="Accès"
           title="Venir au Giron"
@@ -138,6 +139,7 @@ export default function InfosPratiquesPage() {
       {/* Plan */}
       <Section id="plan" tone="sunken" aria-labelledby="titre-plan">
         <SectionHeading
+          variant="tube"
           id="titre-plan"
           eyebrow="Plan du site"
           title="Repère-toi sur la place de fête"
@@ -154,6 +156,7 @@ export default function InfosPratiquesPage() {
         <div className="grid gap-12 lg:grid-cols-12">
           <div className="lg:col-span-5">
             <SectionHeading
+              variant="tube"
               id="titre-cashless"
               eyebrow="Cashless"
               title={
@@ -167,7 +170,7 @@ export default function InfosPratiquesPage() {
             <Reveal delay={0.1} className="mt-10">
               <CreditCard
                 aria-hidden
-                className="size-24 text-coral"
+                className="size-24 text-scarlet"
                 strokeWidth={1.2}
               />
             </Reveal>
@@ -176,7 +179,7 @@ export default function InfosPratiquesPage() {
             {cashlessSteps.map((step, i) => (
               <StaggerItem as="li" key={step.title}>
                 <div className="flex gap-6 rounded-3xl border border-white/10 bg-white/[0.04] p-6 sm:p-8">
-                  <span className="display-xl text-5xl text-coral">
+                  <span className="display-xl text-5xl text-scarlet">
                     {i + 1}
                   </span>
                   <div>
@@ -240,6 +243,7 @@ export default function InfosPratiquesPage() {
       <Section id="faq" tone="sunken" aria-labelledby="titre-faq">
         <div className="grid gap-12 lg:grid-cols-12">
           <SectionHeading
+            variant="tube"
             id="titre-faq"
             eyebrow="FAQ"
             title="Questions fréquentes"

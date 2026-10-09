@@ -12,6 +12,7 @@ import {
 import { commissions, committee, type CommissionId } from "@/content/jeunesse";
 import { site } from "@/content/site";
 import { PageHero } from "@/components/layout/PageHero";
+import { Crown } from "@/components/ui/british/motifs";
 import { ButtonLink } from "@/components/ui/Button";
 import { Reveal, Stagger, StaggerItem } from "@/components/ui/Reveal";
 import { Section } from "@/components/ui/Section";
@@ -44,6 +45,7 @@ export default function LaJeunessePage() {
   return (
     <>
       <PageHero
+        ornament={<Crown className="h-8 w-auto sm:h-10" />}
         eyebrow={site.organizer}
         title={
           <>
@@ -107,7 +109,7 @@ export default function LaJeunessePage() {
           {committee.map((m) => (
             <StaggerItem as="li" key={m.role}>
               <div className="group text-center">
-                <div className="relative mx-auto aspect-square w-full overflow-hidden rounded-[2rem] border border-white/10 bg-gradient-to-br from-plum-2 to-night">
+                <div className="relative mx-auto aspect-square w-full overflow-hidden rounded-[2rem] border border-white/10 bg-gradient-to-br from-dusk-2 to-night">
                   <UserRound
                     aria-hidden
                     strokeWidth={1}
@@ -115,7 +117,7 @@ export default function LaJeunessePage() {
                   />
                   <div
                     aria-hidden
-                    className="absolute inset-0 bg-gradient-to-t from-coral/40 to-transparent opacity-0 transition-opacity duration-500 group-hover:opacity-100"
+                    className="absolute inset-0 bg-gradient-to-t from-scarlet/40 to-transparent opacity-0 transition-opacity duration-500 group-hover:opacity-100"
                   />
                 </div>
                 <p className="mt-4 font-display text-lg font-bold">{m.role}</p>

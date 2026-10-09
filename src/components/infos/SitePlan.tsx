@@ -12,6 +12,7 @@ import {
 } from "lucide-react";
 import { useState } from "react";
 import { cn } from "@/lib/cn";
+import { TubeSign } from "@/components/ui/british/motifs";
 
 interface Zone {
   id: string;
@@ -24,10 +25,14 @@ interface Zone {
   w: number;
   h: number;
   color: string;
+  /** Contour (défaut : `color`) */
+  stroke?: string;
   icon?: LucideIcon;
 }
 
 // PLACEHOLDER — plan indicatif, à remplacer par le plan officiel.
+// Couleurs : lieux = tokens --venue-* ; services = clins d'œil aux lignes du
+// métro londonien, choisis pour rester distincts des quatre lieux.
 const zones: Zone[] = [
   {
     id: "cantine",
@@ -74,7 +79,7 @@ const zones: Zone[] = [
     y: 150,
     w: 70,
     h: 45,
-    color: "#8fb3ff",
+    color: "#8fb3ff", // bleu ciel
     icon: Info,
   },
   {
@@ -84,7 +89,7 @@ const zones: Zone[] = [
     y: 30,
     w: 110,
     h: 90,
-    color: "#9aa0ad",
+    color: "#a0a5a9", // gris « Jubilee »
     icon: CircleParking,
   },
   {
@@ -94,7 +99,7 @@ const zones: Zone[] = [
     y: 200,
     w: 95,
     h: 50,
-    color: "#7fcf6d",
+    color: "#f4a9be", // rose « Hammersmith & City »
     icon: Tent,
   },
   {
@@ -104,7 +109,7 @@ const zones: Zone[] = [
     y: 210,
     w: 80,
     h: 40,
-    color: "#c9a0ff",
+    color: "#f59a42", // orange « Overground »
     icon: BusFront,
   },
   {
@@ -114,7 +119,7 @@ const zones: Zone[] = [
     y: 215,
     w: 50,
     h: 35,
-    color: "#6dd3e0",
+    color: "#5fd0f0", // cyan « Victoria »
     icon: Bike,
   },
   {
@@ -125,7 +130,8 @@ const zones: Zone[] = [
     y: 130,
     w: 50,
     h: 50,
-    color: "#ff7b91",
+    color: "#ffffff", // blanc à contour rouge (premiers secours)
+    stroke: "var(--brand-scarlet)",
     icon: Cross,
   },
 ];
@@ -191,17 +197,17 @@ export function SitePlan() {
                   width={z.w}
                   height={z.h}
                   rx="10"
-                  fill={z.color}
                   fillOpacity={isActive ? 0.9 : 0.55}
-                  stroke={z.color}
                   strokeWidth="1.5"
+                  // var() dans un attribut SVG n'est pas fiable partout : style
+                  style={{ fill: z.color, stroke: z.stroke ?? z.color }}
                 />
                 <text
                   x={z.x + z.w / 2}
                   y={z.y + z.h / 2}
                   textAnchor="middle"
                   dominantBaseline="middle"
-                  className="fill-[#1b1225] text-[9px] font-bold"
+                  className="fill-deep text-[9px] font-bold"
                 >
                   {z.short ?? z.label}
                 </text>
@@ -209,8 +215,8 @@ export function SitePlan() {
             );
           })}
         </svg>
-        <p className="absolute right-6 bottom-5 rounded-full bg-elevated/90 px-3 py-1 text-xs font-semibold text-muted">
-          Plan indicatif — à confirmer
+        <p className="mt-3 text-[0.65rem] font-semibold tracking-[0.08em] uppercase sm:absolute sm:right-6 sm:bottom-5 sm:mt-0 sm:text-xs">
+          <TubeSign>Plan indicatif — à confirmer</TubeSign>
         </p>
       </div>
 
@@ -232,8 +238,13 @@ export function SitePlan() {
             >
               <span
                 aria-hidden
-                className="grid size-7 shrink-0 place-items-center rounded-full text-[#1b1225]"
-                style={{ background: z.color }}
+                className="grid size-7 shrink-0 place-items-center rounded-full text-deep"
+                style={{
+                  background: z.color,
+                  boxShadow: z.stroke
+                    ? `inset 0 0 0 2px ${z.stroke}`
+                    : undefined,
+                }}
               >
                 {z.icon && <z.icon className="size-4" />}
               </span>

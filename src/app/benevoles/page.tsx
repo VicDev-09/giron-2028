@@ -11,6 +11,7 @@ import { days } from "@/content/programme";
 import { site } from "@/content/site";
 import { MailtoForm } from "@/components/forms/MailtoForm";
 import { PageHero } from "@/components/layout/PageHero";
+import { Thistle } from "@/components/ui/british/motifs";
 import { ButtonLink } from "@/components/ui/Button";
 import { Marquee } from "@/components/ui/Marquee";
 import { Reveal, Stagger, StaggerItem } from "@/components/ui/Reveal";
@@ -35,6 +36,8 @@ export default function BenevolesPage() {
   return (
     <>
       <PageHero
+        ornament={<Thistle className="h-12 w-auto sm:h-14" />}
+        band="tartan"
         eyebrow="On a besoin de toi"
         title={
           <>
@@ -109,7 +112,7 @@ export default function BenevolesPage() {
                 >
                   {i + 1}
                 </span>
-                <span className="grid size-12 place-items-center rounded-full bg-coral font-display text-xl font-extrabold text-night">
+                <span className="grid size-12 place-items-center rounded-full bg-scarlet font-display text-xl font-extrabold text-white">
                   {i + 1}
                 </span>
                 <h3 className="mt-8 font-display text-2xl font-bold">
