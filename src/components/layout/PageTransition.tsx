@@ -7,10 +7,12 @@ import { LayoutRouterContext } from "next/dist/shared/lib/app-router-context.sha
 import { usePathname } from "next/navigation";
 import {
   useContext,
+  useEffect,
   useState,
   useSyncExternalStore,
   type ReactNode,
 } from "react";
+import { appState, TubeAnnounce } from "./TubeAnnounce";
 
 const ease = [0.22, 1, 0.36, 1] as const;
 
@@ -35,36 +37,44 @@ function FrozenRouter({ children }: { children: ReactNode }) {
 }
 
 /**
- * Fondu + léger glissement/zoom entre les routes. En mouvement réduit,
- * MotionProvider ne conserve que le fondu.
+ * Transition « métro londonien » entre les routes : la page part vers la
+ * gauche comme une rame, la suivante arrive de la droite, avec l'annonce
+ * « Prochain arrêt — Mind the gap ». En mouvement réduit, MotionProvider ne
+ * conserve que le fondu et l'annonce est masquée.
  */
 export function PageTransition({ children }: { children: ReactNode }) {
   const pathname = usePathname();
   const hydrated = useHydrated();
 
+  useEffect(() => {
+    appState.hydrated = true;
+  }, []);
+
   return (
     // Pas de `initial={false}` ici : AnimatePresence le propagerait à TOUS
     // les descendants et désactiverait les révélations au scroll de la page.
-    <AnimatePresence mode="wait">
-      <motion.div
-        key={pathname}
-        // Premier chargement : page visible telle que rendue par le serveur ;
-        // les navigations suivantes jouent l'entrée.
-        initial={hydrated ? { opacity: 0, y: 14, scale: 0.995 } : false}
-        animate={{
-          opacity: 1,
-          y: 0,
-          scale: 1,
-          transition: { duration: 0.42, ease },
-        }}
-        exit={{
-          opacity: 0,
-          y: -8,
-          transition: { duration: 0.18, ease: "easeIn" },
-        }}
-      >
-        <FrozenRouter>{children}</FrozenRouter>
-      </motion.div>
-    </AnimatePresence>
+    <>
+      <TubeAnnounce key={pathname} pathname={pathname} />
+      <AnimatePresence mode="wait">
+        <motion.div
+          key={pathname}
+          // Premier chargement : page visible telle que rendue par le serveur ;
+          // les navigations suivantes jouent l'entrée.
+          initial={hydrated ? { opacity: 0, x: 56 } : false}
+          animate={{
+            opacity: 1,
+            x: 0,
+            transition: { duration: 0.45, ease },
+          }}
+          exit={{
+            opacity: 0,
+            x: -56,
+            transition: { duration: 0.22, ease: [0.55, 0, 1, 0.45] },
+          }}
+        >
+          <FrozenRouter>{children}</FrozenRouter>
+        </motion.div>
+      </AnimatePresence>
+    </>
   );
 }
