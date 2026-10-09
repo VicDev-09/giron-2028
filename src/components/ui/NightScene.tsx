@@ -6,14 +6,20 @@ import {
   useScroll,
   useSpring,
   useTransform,
-  type MotionValue,
 } from "framer-motion";
-import { useEffect, useRef, type ReactNode } from "react";
+import { useEffect, useRef } from "react";
 import { useAmbiance, type Ambiance } from "@/lib/ambiance";
 import { cn } from "@/lib/cn";
 import { usePointerEffects } from "@/lib/media";
-import { LondonSkyline } from "./british/LondonSkyline";
-import { Embers } from "./Embers";
+import { BigBen } from "./london/BigBen";
+import { DoubleDecker } from "./london/DoubleDecker";
+import {
+  SkylineFar,
+  SkylineLandmarks,
+  SkylineNear,
+} from "./london/LondonSkyline";
+import { LondonWeather } from "./london/LondonWeather";
+import { Rooftops } from "./london/Rooftops";
 
 /**
  * Ciels superposés au ciel de nuit (par défaut), révélés en fondu selon
@@ -44,23 +50,24 @@ const starsOpacity: Record<Ambiance, number> = {
 };
 
 /**
- * Scène nocturne générée : halos lumineux, guirlande de fête et collines de
- * la Glâne en parallaxe. Sert de fond aux héros tant qu'aucune photo/vidéo
+ * Scène « Londres la nuit » des héros : ciel (selon l'heure sur l'accueil),
+ * frise de toits et cheminées en haut, horizon de Londres en bas (ville,
+ * monuments, Big Ben, quai). Sert de fond tant qu'aucune photo/vidéo
  * officielle n'est fournie.
  *
- * `alive` (héros d'accueil) ajoute : braises, dégradé animé, parallaxe à la
- * souris (desktop) et ciel qui suit l'heure locale.
+ * `alive` (héros d'accueil) ajoute : ciel selon l'heure locale, dégradé
+ * animé, Big Ben à l'heure de Londres, London Eye qui tourne, bus à
+ * impériale, brume et pluie fine, parallaxe à la souris (desktop).
+ * Ailleurs, et en mouvement réduit : décor statique.
  */
 export function NightScene({
   className,
   intensity = 1,
-  garland = true,
   alive = false,
 }: {
   className?: string;
   /** Amplitude de la parallaxe (0 = aucune) */
   intensity?: number;
-  garland?: boolean;
   alive?: boolean;
 }) {
   const ref = useRef<HTMLDivElement>(null);
@@ -146,44 +153,59 @@ export function NightScene({
       >
         <Stars />
       </motion.div>
-      {garland && <Garland />}
 
-      {/* Collines — de la plus lointaine à la plus proche */}
-      <Hill
-        y={yFar}
-        x={xFar}
-        className="bottom-[14%] text-[color-mix(in_oklab,var(--brand-dusk-2)_55%,var(--brand-night))]"
-        d="M0 180 C 140 120 260 150 380 110 C 470 80 520 30 600 40 C 690 52 740 120 860 115 C 990 110 1080 60 1200 90 C 1290 112 1360 100 1440 120 L1440 320 L0 320 Z"
-      />
-      {/* Accent britannique : Londres au loin, dans la vallée (accueil) */}
+      {/* Frise de toits et cheminées (en haut, se fond dans la brume) */}
+      <motion.div
+        style={{ x: xStars }}
+        className="absolute -left-[3%] top-0 h-[15%] max-h-36 min-h-16 w-[106%] text-[color-mix(in_oklab,var(--brand-night)_85%,var(--brand-dusk))]"
+      >
+        <Rooftops className="size-full" />
+      </motion.div>
+
+      {/* Lueur de la ville à l'horizon : détache les silhouettes du ciel */}
+      <div className="absolute inset-x-0 bottom-0 h-[60%] bg-[radial-gradient(75%_65%_at_50%_100%,color-mix(in_srgb,var(--brand-royal)_30%,transparent),color-mix(in_srgb,var(--brand-gold)_6%,transparent)_45%,transparent_75%)]" />
+
+      {/* Horizon de Londres — du plus lointain au plus proche */}
+      <motion.div
+        style={{ y: yFar, x: xFar }}
+        className="absolute -left-[3%] bottom-[6%] h-[27%] min-h-24 w-[106%] text-[color-mix(in_oklab,var(--brand-dusk-2)_52%,var(--brand-night))]"
+      >
+        <SkylineFar className="size-full" />
+      </motion.div>
+      <motion.div
+        style={{ y: yMid, x: xMid }}
+        className="absolute -left-[3%] bottom-[2%] h-[33%] min-h-36 w-[106%] text-[color-mix(in_oklab,var(--brand-dusk)_62%,var(--brand-night))]"
+      >
+        <SkylineLandmarks className="size-full" eyeTurning={alive} />
+      </motion.div>
+      <motion.div
+        style={{ y: yMid, x: xMid }}
+        className="absolute right-[3%] bottom-[3%] h-[26%] text-[color-mix(in_oklab,var(--brand-dusk)_40%,var(--brand-night))] sm:right-[8%] sm:h-[64%] sm:max-h-[680px]"
+      >
+        <BigBen className="h-full w-auto" animated={alive} />
+      </motion.div>
+
+      {/* Bus à impériale sur le quai (accueil) */}
       {alive && (
         <motion.div
-          style={{ y: yFar, x: xFar }}
-          className="absolute -left-[3%] bottom-[20%] h-[22%] min-h-28 w-[106%] text-[color-mix(in_oklab,var(--brand-dusk-2)_42%,var(--brand-night))]"
+          style={{ y: yNear }}
+          className="absolute inset-x-0 bottom-[4%] h-[5%] max-h-20 min-h-7 sm:bottom-[5%] sm:h-[7%] sm:min-h-9"
         >
-          <LondonSkyline className="size-full" />
+          <div className="bus bus-drive absolute bottom-0 left-0 h-full">
+            <DoubleDecker className="h-full w-auto" />
+          </div>
         </motion.div>
       )}
 
-      <Hill
-        y={yMid}
-        x={xMid}
-        className="bottom-[6%] text-[color-mix(in_oklab,var(--brand-dusk)_70%,var(--brand-night))]"
-        d="M0 210 C 160 170 300 200 460 165 C 600 135 700 175 820 170 C 980 162 1090 120 1240 140 C 1340 152 1400 170 1440 165 L1440 320 L0 320 Z"
-      />
-      <Hill
-        y={yNear}
-        x={xNear}
-        className="-bottom-[2%] text-night"
-        d="M0 250 C 200 215 360 240 540 222 C 720 205 860 240 1040 228 C 1200 218 1320 236 1440 226 L1440 320 L0 320 Z"
+      <motion.div
+        style={{ y: yNear, x: xNear }}
+        className="absolute -left-[3%] -bottom-px h-[9%] min-h-10 w-[106%] text-night"
       >
-        {/* Petite silhouette de village et de tente de fête */}
-        <path d="M600 226 l18 -22 l18 22 z M636 226 v-14 h26 v14 z M700 224 q46 -40 92 0 z M806 226 l10 -14 l10 14 z" />
-        <rect x="741" y="176" width="2" height="12" />
-      </Hill>
+        <SkylineNear className="size-full" />
+      </motion.div>
 
-      {/* Braises montant de la place de fête, devant les collines */}
-      {alive && <Embers />}
+      {/* Brume et pluie fine (accueil) */}
+      {alive && <LondonWeather />}
 
       {/* Voile bas en journée : garantit le contraste du texte du héros */}
       {alive && (
@@ -193,36 +215,6 @@ export function NightScene({
         />
       )}
     </div>
-  );
-}
-
-function Hill({
-  d,
-  y,
-  x,
-  className,
-  children,
-}: {
-  d: string;
-  y: MotionValue<string>;
-  x: MotionValue<number>;
-  className?: string;
-  children?: ReactNode;
-}) {
-  return (
-    <motion.svg
-      style={{ y, x }}
-      viewBox="0 0 1440 320"
-      preserveAspectRatio="none"
-      className={cn(
-        // Légèrement plus larges que l'écran : la parallaxe ne révèle aucun bord
-        "absolute -left-[3%] h-[38%] min-h-48 w-[106%] fill-current",
-        className,
-      )}
-    >
-      <path d={d} />
-      {children}
-    </motion.svg>
   );
 }
 
@@ -259,53 +251,6 @@ function Stars() {
           r={r}
           className="animate-twinkle fill-white/70"
           style={{ animationDelay: `${(i % 6) * -0.55}s` }}
-        />
-      ))}
-    </svg>
-  );
-}
-
-const bulbColors = [
-  "var(--brand-gold)",
-  "var(--brand-scarlet)",
-  "#fff6dc",
-  "var(--brand-royal-soft)",
-];
-
-/** Guirlande lumineuse suspendue en haut de la scène. */
-function Garland() {
-  const bulbs = Array.from({ length: 21 }, (_, i) => {
-    const t = i / 20;
-    // Chaînette approximée par une parabole
-    return { x: t * 100, y: 6 + 10 * (1 - (2 * t - 1) ** 2), i };
-  });
-  return (
-    <svg
-      viewBox="0 0 100 30"
-      preserveAspectRatio="none"
-      className="absolute inset-x-0 top-0 h-[26%] w-full"
-    >
-      <path
-        d="M0 6 Q 50 26 100 6"
-        fill="none"
-        stroke="rgba(255,255,255,0.25)"
-        strokeWidth="0.15"
-        vectorEffect="non-scaling-stroke"
-      />
-      {bulbs.map((b) => (
-        <ellipse
-          key={b.i}
-          cx={b.x}
-          cy={b.y + 0.9}
-          rx="0.45"
-          ry="0.9"
-          className="animate-twinkle"
-          style={{
-            // var() dans un attribut SVG n'est pas fiable partout : style
-            fill: bulbColors[b.i % bulbColors.length],
-            animationDelay: `${(b.i % 5) * -0.7}s`,
-            filter: `drop-shadow(0 0 1.2px ${bulbColors[b.i % bulbColors.length]})`,
-          }}
         />
       ))}
     </svg>
