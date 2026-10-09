@@ -1,11 +1,11 @@
 import type { Metadata, Viewport } from "next";
 import { Bricolage_Grotesque, Geist } from "next/font/google";
 import { CustomCursor } from "@/components/layout/CustomCursor";
-import { EntryFog, entryFogScript } from "@/components/layout/EntryFog";
 import { Footer } from "@/components/layout/Footer";
 import { Header } from "@/components/layout/Header";
 import { MotionProvider } from "@/components/layout/MotionProvider";
 import { PageTransition } from "@/components/layout/PageTransition";
+import { ThemeBus } from "@/components/layout/ThemeBus";
 import { ScrollProgress } from "@/components/layout/ScrollProgress";
 import { themeScript } from "@/components/layout/ThemeToggle";
 import { site } from "@/content/site";
@@ -52,7 +52,6 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
     >
       <head>
         <script dangerouslySetInnerHTML={{ __html: themeScript }} />
-        <script dangerouslySetInnerHTML={{ __html: entryFogScript }} />
       </head>
       <body id="top" className="flex min-h-full flex-col">
         <a
@@ -69,7 +68,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
           </main>
           <Footer />
           <CustomCursor />
-          <EntryFog />
+          <ThemeBus />
         </MotionProvider>
       </body>
     </html>

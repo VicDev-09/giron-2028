@@ -12,7 +12,6 @@ import { useAmbiance, type Ambiance } from "@/lib/ambiance";
 import { cn } from "@/lib/cn";
 import { usePointerEffects } from "@/lib/media";
 import { BigBen } from "./london/BigBen";
-import { DoubleDecker } from "./london/DoubleDecker";
 import {
   SkylineFar,
   SkylineLandmarks,
@@ -56,8 +55,8 @@ const starsOpacity: Record<Ambiance, number> = {
  * officielle n'est fournie.
  *
  * `alive` (héros d'accueil) ajoute : ciel selon l'heure locale, dégradé
- * animé, Big Ben à l'heure de Londres, London Eye qui tourne, bus à
- * impériale, brume et pluie fine, parallaxe à la souris (desktop).
+ * animé, Big Ben à l'heure de Londres, London Eye qui tourne, brume et
+ * pluie fine pilotées par le scroll, parallaxe à la souris (desktop).
  * Ailleurs, et en mouvement réduit : décor statique.
  */
 export function NightScene({
@@ -154,10 +153,11 @@ export function NightScene({
         <Stars />
       </motion.div>
 
-      {/* Frise de toits et cheminées (en haut, se fond dans la brume) */}
+      {/* Frise de toits, fine et à peine plus sombre que le ciel : une
+          évocation qui laisse la navigation parfaitement lisible */}
       <motion.div
         style={{ x: xStars }}
-        className="absolute -left-[3%] top-0 h-[15%] max-h-36 min-h-16 w-[106%] text-[color-mix(in_oklab,var(--brand-night)_85%,var(--brand-dusk))]"
+        className="absolute -left-[3%] top-0 h-[8%] max-h-16 min-h-10 w-[106%] text-[color-mix(in_oklab,var(--brand-dusk-2)_30%,var(--brand-night))] opacity-75"
       >
         <Rooftops className="size-full" />
       </motion.div>
@@ -185,18 +185,6 @@ export function NightScene({
         <BigBen className="h-full w-auto" animated={alive} />
       </motion.div>
 
-      {/* Bus à impériale sur le quai (accueil) */}
-      {alive && (
-        <motion.div
-          style={{ y: yNear }}
-          className="absolute inset-x-0 bottom-[4%] h-[5%] max-h-20 min-h-7 sm:bottom-[5%] sm:h-[7%] sm:min-h-9"
-        >
-          <div className="bus bus-drive absolute bottom-0 left-0 h-full">
-            <DoubleDecker className="h-full w-auto" />
-          </div>
-        </motion.div>
-      )}
-
       <motion.div
         style={{ y: yNear, x: xNear }}
         className="absolute -left-[3%] -bottom-px h-[9%] min-h-10 w-[106%] text-night"
@@ -204,8 +192,8 @@ export function NightScene({
         <SkylineNear className="size-full" />
       </motion.div>
 
-      {/* Brume et pluie fine (accueil) */}
-      {alive && <LondonWeather />}
+      {/* Brume et pluie fine pilotées par le scroll (accueil) */}
+      {alive && <LondonWeather progress={scrollYProgress} reduce={!!reduce} />}
 
       {/* Voile bas en journée : garantit le contraste du texte du héros */}
       {alive && (

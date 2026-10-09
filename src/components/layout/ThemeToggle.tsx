@@ -2,6 +2,7 @@
 
 import { Moon, Sun } from "lucide-react";
 import { useSyncExternalStore } from "react";
+import { driveThemeBus } from "./ThemeBus";
 
 type Theme = "light" | "dark";
 
@@ -47,7 +48,8 @@ export function ThemeToggle({ className }: { className?: string }) {
   return (
     <button
       type="button"
-      onClick={() => setTheme(next)}
+      // Le bus rouge balaie l'écran et dévoile le nouveau thème
+      onClick={() => driveThemeBus(() => setTheme(next))}
       aria-label={
         theme === null
           ? "Changer de thème"

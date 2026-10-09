@@ -3,7 +3,6 @@ import { site } from "@/content/site";
 import { ButtonLink } from "@/components/ui/Button";
 import { Countdown } from "@/components/ui/Countdown";
 import { NightScene } from "@/components/ui/NightScene";
-import { PhoneBox } from "./PhoneBox";
 import { Container } from "@/components/ui/Section";
 
 const delay = (s: number) => ({ animationDelay: `${s}s` });
@@ -66,9 +65,6 @@ export function HomeHero() {
       ) : (
         <NightScene alive className="-z-10" />
       )}
-
-      {/* Easter-egg : cabine téléphonique au coin du quai */}
-      <PhoneBox className="absolute bottom-[4%] left-[2%] h-14 sm:left-[2.5%] sm:h-20" />
 
       <Container className="flex flex-1 flex-col justify-end gap-12 pt-32 pb-20 lg:grid lg:grid-cols-[1fr_minmax(0,26rem)] lg:items-end lg:gap-16 lg:pb-24">
         <div>

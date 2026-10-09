@@ -554,30 +554,7 @@
   }
 }
 
-/* Bus à impériale : traverse puis disparaît un moment (45 % du cycle hors
-   champ) ; garé sur le quai en mouvement réduit. */
-.bus {
-  transform: translate3d(var(--bus-park, 40vw), 0, 0);
-}
-.bus.bus-drive {
-  animation: bus-drive 40s linear infinite;
-}
-@media (max-width: 639px) {
-  .bus.bus-drive {
-    animation-duration: 54s;
-  }
-}
-@keyframes bus-drive {
-  0% {
-    transform: translate3d(-32vw, 0, 0);
-  }
-  55%,
-  100% {
-    transform: translate3d(112vw, 0, 0);
-  }
-}
-
-/* Brume : nappes dérivant lentement */
+/* Brume : nappes déplacées et révélées par le scroll (LondonWeather) */
 .fog-layer {
   background:
     radial-gradient(
@@ -587,27 +564,9 @@
     ),
     radial-gradient(40% 55% at 72% 60%, rgb(205 215 245 / 0.1), transparent 70%);
 }
-.fog-layer-1 {
-  animation: fog-drift 70s ease-in-out infinite alternate;
-}
-.fog-layer-2 {
-  opacity: 0.7;
-  animation: fog-drift 95s ease-in-out -30s infinite alternate-reverse;
-}
-@keyframes fog-drift {
-  from {
-    transform: translate3d(-8%, 0, 0);
-  }
-  to {
-    transform: translate3d(8%, 0, 0);
-  }
-}
-
-/* Pluie fine : tuile SVG translatée d'exactement une période (raccord net) */
+/* Pluie fine : texture SVG, déplacée et révélée par le scroll (NightScene) */
 .rain {
-  opacity: 0.22;
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cg stroke='%23cfd8ff' stroke-opacity='.5' stroke-width='1' stroke-linecap='round'%3E%3Cpath d='M12 10l-4 13M58 4l-4 13M104 30l-4 13M140 12l-4 13M30 70l-4 13M84 64l-4 13M126 92l-4 13M18 122l-4 13M70 132l-4 13M116 140l-4 13'/%3E%3C/g%3E%3C/svg%3E");
-  animation: rain-fall 0.8s linear infinite;
   mask-image: linear-gradient(
     to bottom,
     transparent 10%,
@@ -616,9 +575,46 @@
     transparent
   );
 }
-@keyframes rain-fall {
+/* Bus de bascule jour/nuit (ThemeBus) : invisible au repos */
+.theme-bus {
+  position: fixed;
+  left: 0;
+  bottom: 14vh;
+  z-index: 250;
+  height: clamp(110px, 26vh, 250px);
+  pointer-events: none;
+  visibility: hidden;
+  transform: translate3d(-110%, 0, 0);
+  view-transition-name: theme-bus;
+}
+.theme-bus[data-pos] {
+  visibility: visible;
+}
+.theme-bus[data-pos="end"] {
+  transform: translate3d(100vw, 0, 0);
+}
+/* Repli sans View Transitions : traversée CSS */
+.theme-bus[data-pos="drive"] {
+  transform: translate3d(100vw, 0, 0);
+  transition: transform 1s cubic-bezier(0.65, 0, 0.35, 1);
+}
+/* Avec View Transitions : le bus glisse, le nouveau thème le suit */
+:root.theme-bus-run::view-transition-group(theme-bus) {
+  animation-duration: 1s;
+  animation-timing-function: cubic-bezier(0.65, 0, 0.35, 1);
+}
+:root.theme-bus-run::view-transition-old(root) {
+  animation: none;
+}
+:root.theme-bus-run::view-transition-new(root) {
+  animation: theme-wipe 1s cubic-bezier(0.65, 0, 0.35, 1) both;
+}
+@keyframes theme-wipe {
+  from {
+    clip-path: inset(0 100% 0 0);
+  }
   to {
-    transform: translate3d(-49px, 160px, 0);
+    clip-path: inset(0 0 0 0);
   }
 }
 
@@ -660,46 +656,7 @@
   }
 }
 
-/* Brume d'entrée : se lève une fois par session (script dans <head>),
-   ne bloque rien (pointer-events: none), passable, absente en mouvement
-   réduit. Le contenu est déjà rendu dessous. */
-.entry-fog {
-  position: fixed;
-  inset: 0;
-  z-index: 300;
-  pointer-events: none;
-  background:
-    radial-gradient(
-      60% 45% at 25% 70%,
-      rgb(214 222 248 / 0.55),
-      transparent 70%
-    ),
-    radial-gradient(
-      55% 40% at 75% 40%,
-      rgb(214 222 248 / 0.45),
-      transparent 70%
-    ),
-    radial-gradient(
-      70% 50% at 50% 100%,
-      rgb(214 222 248 / 0.5),
-      transparent 70%
-    ),
-    linear-gradient(to bottom, rgb(10 16 48 / 0.92), rgb(23 34 94 / 0.88));
-  animation: fog-lift 1.3s cubic-bezier(0.4, 0, 0.2, 1) 0.15s forwards;
-}
-@keyframes fog-lift {
-  to {
-    opacity: 0;
-    transform: translate3d(0, -16%, 0) scale(1.06);
-  }
-}
-.fog-seen .entry-fog,
-.fog-skip .entry-fog {
-  display: none;
-}
-
 @media (prefers-reduced-motion: reduce) {
-  .entry-fog,
   .tube-announce,
   .rain {
     display: none;
