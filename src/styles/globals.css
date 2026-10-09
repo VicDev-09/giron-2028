@@ -335,21 +335,21 @@
     background-image:
       repeating-linear-gradient(
         90deg,
-        color-mix(in srgb, var(--brand-scarlet) 70%, transparent) 0 6px,
-        transparent 6px 16px,
-        color-mix(in srgb, var(--brand-gold) 60%, transparent) 16px 18px,
-        transparent 18px 30px,
-        color-mix(in srgb, var(--brand-royal) 55%, transparent) 30px 40px,
-        transparent 40px 52px
+        color-mix(in srgb, var(--brand-scarlet) 70%, transparent) 0 3px,
+        transparent 3px 8px,
+        color-mix(in srgb, var(--brand-gold) 60%, transparent) 8px 9px,
+        transparent 9px 15px,
+        color-mix(in srgb, var(--brand-royal) 55%, transparent) 15px 20px,
+        transparent 20px 26px
       ),
       repeating-linear-gradient(
         0deg,
-        color-mix(in srgb, var(--brand-scarlet) 70%, transparent) 0 6px,
-        transparent 6px 16px,
-        color-mix(in srgb, var(--brand-gold) 60%, transparent) 16px 18px,
-        transparent 18px 30px,
-        color-mix(in srgb, var(--brand-royal) 55%, transparent) 30px 40px,
-        transparent 40px 52px
+        color-mix(in srgb, var(--brand-scarlet) 70%, transparent) 0 3px,
+        transparent 3px 8px,
+        color-mix(in srgb, var(--brand-gold) 60%, transparent) 8px 9px,
+        transparent 9px 15px,
+        color-mix(in srgb, var(--brand-royal) 55%, transparent) 15px 20px,
+        transparent 20px 26px
       );
   }
 

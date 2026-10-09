@@ -215,7 +215,7 @@ export function SitePlan() {
             );
           })}
         </svg>
-        <p className="mt-3 text-[0.65rem] font-semibold tracking-[0.08em] uppercase sm:absolute sm:right-6 sm:bottom-5 sm:mt-0 sm:text-xs">
+        <p className="mt-2 flex justify-end text-[0.65rem] font-semibold tracking-[0.08em] uppercase sm:text-xs">
           <TubeSign>Plan indicatif — à confirmer</TubeSign>
         </p>
       </div>
