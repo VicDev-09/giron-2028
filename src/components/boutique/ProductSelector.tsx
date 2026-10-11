@@ -10,34 +10,38 @@ import {
   type LucideIcon,
 } from "lucide-react";
 import { useState, type KeyboardEvent } from "react";
-import { boutique } from "@/content/boutique";
+import { boutique, products, type BoutiqueProduct } from "@/content/boutique";
 import { cn } from "@/lib/cn";
+import { ProductStage } from "./ProductStage";
 
 const icons: Record<string, LucideIcon> = { shirt: Shirt, bottle: CupSoda };
 const ease = [0.22, 1, 0.36, 1] as const;
 
 type Slot =
-  | { kind: "product" }
+  | { kind: "product"; product: BoutiqueProduct }
+  | { kind: "awaiting" }
   | { kind: "upcoming"; id: string; label: string; icon: LucideIcon };
 
-// Le produit test au centre, un emplacement « Bientôt » de chaque côté
-const slots: Slot[] = [
-  {
-    kind: "upcoming",
-    id: boutique.upcoming[0].id,
-    label: boutique.upcoming[0].label,
-    icon: icons[boutique.upcoming[0].icon],
-  },
-  { kind: "product" },
-  {
-    kind: "upcoming",
-    id: boutique.upcoming[1].id,
-    label: boutique.upcoming[1].label,
-    icon: icons[boutique.upcoming[1].icon],
-  },
-];
+const upcoming: Slot[] = boutique.upcoming.map((u) => ({
+  kind: "upcoming",
+  id: u.id,
+  label: u.label,
+  icon: icons[u.icon],
+}));
 
-/** Écart circulaire de -1 à 1 entre un emplacement et l'actif. */
+/**
+ * Emplacements : les produits au centre, un « Bientôt » de chaque côté.
+ * Sans produit, un emplacement « Produit à venir » prend le centre.
+ */
+const center: Slot[] = products.length
+  ? products.map((product) => ({ kind: "product", product }))
+  : [{ kind: "awaiting" }];
+const slots: Slot[] = [upcoming[0], ...center, upcoming[1]];
+const START = 1;
+/** Rien à faire défiler tant qu'il n'y a aucun produit. */
+const navigable = products.length > 0;
+
+/** Écart circulaire entre un emplacement et l'actif (-n/2 … n/2). */
 function offset(index: number, active: number) {
   const n = slots.length;
   let d = (index - active + n) % n;
@@ -45,25 +49,44 @@ function offset(index: number, active: number) {
   return d;
 }
 
+function slotKey(slot: Slot) {
+  if (slot.kind === "product") return slot.product.id;
+  return slot.kind === "upcoming" ? slot.id : "awaiting";
+}
+
 /**
  * Sélecteur de produits « sur le même axe » : les emplacements tournent
  * autour d'un axe vertical (translation, échelle, rotation Y, opacité).
- * Flèches, pastilles-icônes et touches ←/→ ; en mouvement réduit,
- * MotionProvider rend la bascule instantanée.
+ * Flèches, pastilles-icônes et touches ←/→ (désactivées tant qu'aucun
+ * produit n'existe) ; en mouvement réduit, MotionProvider rend la bascule
+ * instantanée.
  */
 export function ProductSelector({ targetId }: { targetId: string }) {
-  const [active, setActive] = useState(1);
+  const [active, setActive] = useState(START);
   const go = (delta: number) =>
-    setActive((a) => (a + delta + slots.length) % slots.length);
+    navigable && setActive((a) => (a + delta + slots.length) % slots.length);
   const current = slots[active];
-  const { product } = boutique;
 
   function onKeyDown(e: KeyboardEvent<HTMLDivElement>) {
+    if (!navigable) return;
     if (e.key === "ArrowLeft") go(-1);
     else if (e.key === "ArrowRight") go(1);
     else return;
     e.preventDefault();
   }
+
+  const title =
+    current.kind === "product"
+      ? current.product.name
+      : current.kind === "awaiting"
+        ? boutique.upcomingProduct.name
+        : current.label;
+  const subtitle =
+    current.kind === "product"
+      ? current.product.subtitle
+      : current.kind === "awaiting"
+        ? boutique.upcomingProduct.subtitle
+        : "Bientôt dans la collection";
 
   return (
     <div className="flex flex-col items-center">
@@ -77,39 +100,35 @@ export function ProductSelector({ targetId }: { targetId: string }) {
         {slots.map((slot, i) => {
           const d = offset(i, active);
           const isActive = d === 0;
+          const hidden = Math.abs(d) > 1;
           return (
             <motion.div
-              key={slot.kind === "product" ? "product" : slot.id}
+              key={slotKey(slot)}
               aria-hidden={!isActive}
               initial={false}
               animate={{
                 x: `${d * 62}%`,
                 scale: isActive ? 1 : 0.58,
                 rotateY: d * -32,
-                opacity: isActive ? 1 : 0.32,
+                opacity: hidden ? 0 : isActive ? 1 : 0.32,
               }}
               transition={{ duration: 0.7, ease }}
               style={{ zIndex: isActive ? 2 : 1 }}
               className="absolute inset-y-0 left-1/2 aspect-square h-full -translate-x-1/2"
             >
               {slot.kind === "product" ? (
-                <div className="group/stage relative size-full">
-                  <div
-                    aria-hidden
-                    className="product-halo absolute inset-[-10%] rounded-full opacity-80 transition-opacity duration-500 group-hover/stage:opacity-100"
-                  />
-                  <div className="product-float relative size-full">
-                    {/* eslint-disable-next-line @next/next/no-img-element -- poster 760×760 transparent, déjà léger */}
-                    <img
-                      src={product.source.poster}
-                      alt={isActive ? product.name : ""}
-                      width={760}
-                      height={760}
-                      fetchPriority="high"
-                      className="size-full object-contain drop-shadow-[0_30px_40px_rgba(0,0,0,0.5)]"
-                    />
-                  </div>
-                </div>
+                <ProductStage
+                  source={slot.product.source}
+                  label={slot.product.name}
+                  draggable={false}
+                  className="product-float size-full"
+                />
+              ) : slot.kind === "awaiting" ? (
+                <ProductStage
+                  label={boutique.upcomingProduct.name}
+                  draggable={false}
+                  className="size-full"
+                />
               ) : (
                 <div className="grid size-full place-items-center">
                   <div className="grid aspect-square w-[62%] place-items-center rounded-full border border-dashed border-white/25 bg-white/[0.03]">
@@ -127,62 +146,64 @@ export function ProductSelector({ targetId }: { targetId: string }) {
         })}
       </div>
 
-      {/* Commandes : flèches + pastilles-icônes */}
+      {/* Commandes : flèches (+ pastilles-icônes quand il y a des produits) */}
       <div className="mt-6 flex items-center gap-5">
         <button
           type="button"
           onClick={() => go(-1)}
+          disabled={!navigable}
           aria-label="Produit précédent"
-          className="grid size-11 place-items-center rounded-full border border-white/20 text-white transition-colors hover:border-white hover:bg-white/10"
+          className="grid size-11 place-items-center rounded-full border border-white/20 text-white transition-colors enabled:hover:border-white enabled:hover:bg-white/10 disabled:cursor-not-allowed disabled:opacity-35"
         >
           <ChevronLeft aria-hidden className="size-5" />
         </button>
-        <div className="flex items-center gap-2">
-          {slots.map((slot, i) => {
-            const Icon = slot.kind === "product" ? Sparkle : slot.icon;
-            const label =
-              slot.kind === "product"
-                ? product.name
-                : `${slot.label} (bientôt)`;
-            return (
-              <button
-                key={i}
-                type="button"
-                onClick={() => setActive(i)}
-                aria-label={label}
-                aria-current={i === active ? "true" : undefined}
-                className={cn(
-                  "grid size-9 place-items-center rounded-full border transition-[background-color,border-color,color] duration-300",
-                  i === active
-                    ? "border-gold bg-gold text-deep"
-                    : "border-white/20 text-white/60 hover:border-white/50 hover:text-white",
-                )}
-              >
-                <Icon aria-hidden className="size-4" />
-              </button>
-            );
-          })}
-        </div>
+        {navigable && (
+          <div className="flex items-center gap-2">
+            {slots.map((slot, i) => {
+              const Icon = slot.kind === "upcoming" ? slot.icon : Sparkle;
+              const label =
+                slot.kind === "product"
+                  ? slot.product.name
+                  : slot.kind === "upcoming"
+                    ? `${slot.label} (bientôt)`
+                    : boutique.upcomingProduct.name;
+              return (
+                <button
+                  key={slotKey(slot)}
+                  type="button"
+                  onClick={() => setActive(i)}
+                  aria-label={label}
+                  aria-current={i === active ? "true" : undefined}
+                  className={cn(
+                    "grid size-9 place-items-center rounded-full border transition-[background-color,border-color,color] duration-300",
+                    i === active
+                      ? "border-gold bg-gold text-deep"
+                      : "border-white/20 text-white/60 hover:border-white/50 hover:text-white",
+                  )}
+                >
+                  <Icon aria-hidden className="size-4" />
+                </button>
+              );
+            })}
+          </div>
+        )}
         <button
           type="button"
           onClick={() => go(1)}
+          disabled={!navigable}
           aria-label="Produit suivant"
-          className="grid size-11 place-items-center rounded-full border border-white/20 text-white transition-colors hover:border-white hover:bg-white/10"
+          className="grid size-11 place-items-center rounded-full border border-white/20 text-white transition-colors enabled:hover:border-white enabled:hover:bg-white/10 disabled:cursor-not-allowed disabled:opacity-35"
         >
           <ChevronRight aria-hidden className="size-5" />
         </button>
       </div>
 
-      {/* Nom + sous-titre + CTA du produit sélectionné */}
+      {/* Nom + sous-titre + CTA de l'emplacement sélectionné */}
       <div aria-live="polite" className="mt-6 min-h-36 text-center">
         <h2 className="font-display text-3xl font-extrabold tracking-tight sm:text-4xl">
-          {current.kind === "product" ? product.name : current.label}
+          {title}
         </h2>
-        <p className="mt-2 text-white/75">
-          {current.kind === "product"
-            ? product.subtitle
-            : "Bientôt dans la collection"}
-        </p>
+        <p className="mx-auto mt-2 max-w-md text-white/75">{subtitle}</p>
         <div className="mt-6">
           {current.kind === "product" ? (
             <a
@@ -193,7 +214,7 @@ export function ProductSelector({ targetId }: { targetId: string }) {
               <ChevronRight aria-hidden className="size-4 rotate-90" />
             </a>
           ) : (
-            <span className="inline-flex h-12 items-center rounded-full border border-white/20 px-6 text-sm font-semibold text-white/60">
+            <span className="inline-flex h-12 items-center rounded-full border border-white/20 px-6 text-sm font-semibold text-white/70">
               Bientôt disponible
             </span>
           )}

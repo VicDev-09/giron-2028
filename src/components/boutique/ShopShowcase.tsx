@@ -7,12 +7,13 @@ import {
   useVelocity,
   type Variants,
 } from "framer-motion";
-import { ChevronDown } from "lucide-react";
+import { ChevronDown, Sparkle } from "lucide-react";
 import { useRef } from "react";
-import { boutique } from "@/content/boutique";
+import { boutique, products } from "@/content/boutique";
 import { site } from "@/content/site";
 import { ButtonLink } from "@/components/ui/Button";
 import { Container } from "@/components/ui/Section";
+import { cn } from "@/lib/cn";
 import { useMediaQuery } from "@/lib/media";
 import { PigmentField } from "./PigmentField";
 import { ProductSelector } from "./ProductSelector";
@@ -28,13 +29,15 @@ const rise: Variants = {
   show: { opacity: 1, y: 0, transition: { duration: 0.8, ease } },
 };
 
-const { product } = boutique;
+/** Produit présenté (le premier) — aucun tant que la boutique est vide */
+const product = products.at(0);
 const PRESENTATION_ID = "presentation";
 
 /**
  * Vitrine de la future boutique (démo d'expérience, aucun e-commerce) :
  * sélecteur → présentation 360° au scroll avec pigments → gros plan →
- * clôture. Scroll-linked en transform uniquement ; les opacités passent par
+ * clôture. Sans produit, chaque section affiche son état « à venir »
+ * (placeholder, aucune image) en gardant la mise en page et l'ambiance. Scroll-linked en transform uniquement ; les opacités passent par
  * des révélations à l'entrée dans l'écran.
  */
 export function ShopShowcase() {
@@ -123,9 +126,18 @@ function Presentation() {
       id={PRESENTATION_ID}
       ref={ref}
       aria-labelledby="titre-presentation"
-      className="tone-night relative h-[240vh] overflow-clip lg:h-[300vh]"
+      className={cn(
+        "tone-night relative overflow-clip",
+        product ? "h-[240vh] lg:h-[300vh]" : undefined,
+      )}
     >
-      <div className="sticky top-0 flex h-svh items-center overflow-hidden">
+      <div
+        className={cn(
+          "flex items-center overflow-hidden",
+          // Le fond couvre aussi les marges : padding à l'intérieur
+          product ? "sticky top-0 h-svh" : "relative min-h-[90svh] py-16",
+        )}
+      >
         {/* Fond : la parallaxe la plus lente */}
         <motion.div
           aria-hidden
@@ -144,15 +156,18 @@ function Presentation() {
             <PigmentField boost={boost} className="p-[14%] -m-[14%]">
               <motion.div style={{ y: productY }}>
                 <ProductStage
-                  source={product.source}
-                  label={product.name}
+                  source={product?.source}
+                  label={product?.name ?? boutique.presentation.title}
                   rotation={rotation}
+                  draggable={!!product}
                 />
               </motion.div>
             </PigmentField>
-            <p className="mt-2 text-center text-xs font-semibold tracking-[0.2em] text-white/55 uppercase">
-              Fais défiler ou glisse pour tourner
-            </p>
+            {product && (
+              <p className="mt-2 text-center text-xs font-semibold tracking-[0.2em] text-white/55 uppercase">
+                Fais défiler ou glisse pour tourner
+              </p>
+            )}
           </div>
 
           <motion.div
@@ -163,38 +178,43 @@ function Presentation() {
             className="rounded-3xl border border-white/10 bg-night/60 p-5 backdrop-blur-md sm:p-7 lg:border-0 lg:bg-transparent lg:p-0 lg:backdrop-blur-none"
           >
             <motion.p variants={rise} className="eyebrow text-gold">
-              {product.subtitle}
+              {product?.subtitle ?? boutique.presentation.eyebrow}
             </motion.p>
             <motion.h2
               id="titre-presentation"
               variants={rise}
               className="mt-2 font-display text-3xl leading-[0.95] font-extrabold tracking-tight sm:text-5xl lg:text-6xl"
             >
-              {product.name}
+              {product?.name ?? boutique.presentation.title}
             </motion.h2>
-            <motion.dl
-              variants={rise}
-              className="mt-5 grid grid-cols-3 gap-2 sm:mt-8 sm:gap-3"
-            >
-              {product.specs.map((spec) => (
-                <div
-                  key={spec.label}
-                  className="rounded-2xl border border-white/10 bg-white/[0.04] px-3 py-2.5 sm:px-4 sm:py-3"
-                >
-                  <dt className="text-[0.65rem] font-semibold tracking-[0.15em] text-white/60 uppercase">
-                    {spec.label}
-                  </dt>
-                  <dd className="mt-1 text-xs leading-snug font-semibold sm:text-sm">
-                    {spec.value}
-                  </dd>
-                </div>
-              ))}
-            </motion.dl>
+            {product && (
+              <motion.dl
+                variants={rise}
+                className="mt-5 grid grid-cols-3 gap-2 sm:mt-8 sm:gap-3"
+              >
+                {product.specs.map((spec) => (
+                  <div
+                    key={spec.label}
+                    className="rounded-2xl border border-white/10 bg-white/[0.04] px-3 py-2.5 sm:px-4 sm:py-3"
+                  >
+                    <dt className="text-[0.65rem] font-semibold tracking-[0.15em] text-white/60 uppercase">
+                      {spec.label}
+                    </dt>
+                    <dd className="mt-1 text-xs leading-snug font-semibold sm:text-sm">
+                      {spec.value}
+                    </dd>
+                  </div>
+                ))}
+              </motion.dl>
+            )}
             <motion.p
               variants={rise}
-              className="mt-5 hidden max-w-md leading-relaxed text-white/80 sm:block sm:text-lg"
+              className={cn(
+                "mt-5 max-w-md leading-relaxed text-white/80 sm:text-lg",
+                product && "hidden sm:block",
+              )}
             >
-              {product.description}
+              {product?.description ?? boutique.presentation.text}
             </motion.p>
           </motion.div>
         </Container>
@@ -216,6 +236,12 @@ function Detail() {
     [0, 1],
     reduce ? [2.1, 2.1] : [1.8, 2.5],
   );
+  // Écusson de l'état « à venir » : zoom plus doux
+  const placeholderZoom = useTransform(
+    scrollYProgress,
+    [0, 1],
+    reduce ? [1, 1] : [0.9, 1.15],
+  );
 
   return (
     <section
@@ -226,21 +252,37 @@ function Detail() {
       <Container className="grid items-center gap-12 lg:grid-cols-2">
         <div className="relative mx-auto size-[min(80vw,28rem)]">
           <div className="absolute inset-0 overflow-hidden rounded-full border border-gold/40 bg-[radial-gradient(circle,var(--brand-dusk-2),var(--brand-night)_72%)] shadow-[0_30px_80px_-30px_rgba(0,0,0,0.8)]">
-            {/* Gros plan sur le logo de la frame nette (cap_00) */}
-            <motion.div
-              style={{ scale: zoom, transformOrigin: "49% 39%" }}
-              className="absolute inset-0"
-            >
-              {/* eslint-disable-next-line @next/next/no-img-element -- frame 760×760 de la séquence, zoomée */}
-              <img
-                src={product.detailFrame}
-                alt={`${product.name}, gros plan sur la broderie`}
-                width={760}
-                height={760}
-                loading="lazy"
-                className="size-full object-contain"
-              />
-            </motion.div>
+            {product?.detailImage ? (
+              /* Gros plan sur l'image nette du produit, zoomée au scroll */
+              <motion.div
+                style={{
+                  scale: zoom,
+                  transformOrigin: `${(product.detailFocus?.x ?? 0.5) * 100}% ${(product.detailFocus?.y ?? 0.5) * 100}%`,
+                }}
+                className="absolute inset-0"
+              >
+                {/* eslint-disable-next-line @next/next/no-img-element -- image nette du produit, zoomée */}
+                <img
+                  src={product.detailImage}
+                  alt={`${product.name}, gros plan`}
+                  loading="lazy"
+                  className="size-full object-contain"
+                />
+              </motion.div>
+            ) : (
+              /* Aucun produit : écusson brodé stylisé (décor, aucune image) */
+              <motion.div
+                aria-hidden
+                style={{ scale: placeholderZoom }}
+                className="absolute inset-0 grid place-items-center"
+              >
+                <div className="grid aspect-square w-[56%] place-items-center rounded-full border-2 border-dashed border-gold/50 bg-[radial-gradient(circle,color-mix(in_srgb,var(--brand-scarlet)_18%,transparent),transparent_70%)]">
+                  <div className="grid aspect-square w-[78%] place-items-center rounded-full border border-white/20">
+                    <Sparkle className="size-12 fill-gold text-gold" />
+                  </div>
+                </div>
+              </motion.div>
+            )}
           </div>
           <span className="absolute -bottom-3 left-1/2 -translate-x-1/2 rounded-full border border-gold/40 bg-night px-4 py-1.5 text-xs font-semibold tracking-[0.2em] text-gold uppercase">
             Gros plan

@@ -1,39 +1,53 @@
 /**
  * Boutique — page VITRINE (démo d'expérience, pas d'e-commerce).
  *
- * ⚠️ CONTENU PROVISOIRE — aucun produit, taille, prix ni stock réel. Un seul
- * produit test, aucun panier ni paiement, aucun traitement serveur.
- * Textes et caractéristiques ci-dessous : placeholders à remplacer.
+ * ⚠️ CONTENU PROVISOIRE — aucun produit pour l'instant : la page s'affiche
+ * dans son état « Produit à venir ». Aucun panier, prix, paiement ni
+ * traitement serveur.
+ *
+ * Ajouter un produit : une entrée dans `products` suffit. Par exemple, pour
+ * une séquence 360° (images dans /public/boutique/<produit>/) :
+ *   {
+ *     id: "t-shirt",
+ *     name: "T-shirt Giron 2028",
+ *     subtitle: "Coton bio — édition officielle",
+ *     source: {
+ *       kind: "sequence",
+ *       frames: Array.from({ length: 36 }, (_, i) =>
+ *         `/boutique/t-shirt/spin_${String(i).padStart(2, "0")}.png`),
+ *       poster: "/boutique/t-shirt/poster.png",
+ *     },
+ *     detailImage: "/boutique/t-shirt/spin_00.png",
+ *     detailFocus: { x: 0.5, y: 0.4 },
+ *     specs: [{ label: "Matière", value: "…" }],
+ *     description: "…",
+ *   }
+ * ou, plus tard, `source: { kind: "model", src: "/boutique/t-shirt.glb" }`.
  */
 import type { ProductSource } from "@/components/boutique/ProductStage";
 
-/** Séquence 360° : 36 images (une tous les 10°), fond transparent. */
-const capFrames = Array.from(
-  { length: 36 },
-  (_, i) => `/boutique/spin/cap_${String(i).padStart(2, "0")}.png`,
-);
+export interface BoutiqueProduct {
+  id: string;
+  name: string;
+  subtitle: string;
+  source: ProductSource;
+  /** Image nette pour le gros plan, et point de zoom (0–1) */
+  detailImage?: string;
+  detailFocus?: { x: number; y: number };
+  specs: ReadonlyArray<{ label: string; value: string }>;
+  description: string;
+}
+
+/** Produits de la boutique — vide tant qu'aucun article n'est prêt. */
+export const products: readonly BoutiqueProduct[] = [];
 
 export const boutique = {
   eyebrow: "Boutique · Bientôt",
 
-  product: {
-    id: "casquette",
-    name: "Casquette Giron",
-    subtitle: "Brodée, ajustable — édition test",
-    source: {
-      kind: "sequence",
-      frames: capFrames,
-      poster: "/boutique/cap-poster.png",
-    } satisfies ProductSource,
-    /** Frame nette utilisée pour le gros plan (cap_00) */
-    detailFrame: capFrames[0],
-    specs: [
-      { label: "Matière", value: "Coton sergé épais" },
-      { label: "Taille", value: "Unique, ajustable" },
-      { label: "Édition", value: "Made for Giron 2028" },
-    ],
-    description:
-      "La casquette officielle de l'édition : visière courbée, logo brodé et fermeture réglable. Pour le soleil de juillet comme pour les nuits sous la Tonnelle.",
+  /** Textes de l'état « aucun produit » */
+  upcomingProduct: {
+    name: "Produit à venir",
+    subtitle: "Les premiers articles de l'édition arrivent bientôt.",
   },
 
   /** Emplacements « Bientôt » du sélecteur (icônes lucide) */
@@ -42,10 +56,16 @@ export const boutique = {
     { id: "gourde", label: "Gourde", icon: "bottle" },
   ],
 
+  presentation: {
+    eyebrow: "Édition 2028",
+    title: "Produit à venir",
+    text: "Les premiers articles de l'édition arrivent bientôt. Ils seront présentés ici, sous tous les angles.",
+  },
+
   detail: {
     eyebrow: "La finition",
-    title: "Brodé à la main",
-    text: "Logo en broderie dense, coutures renforcées et intérieur doublé. Détails de fabrication définitifs à confirmer.",
+    title: "Le détail qui compte",
+    text: "Matières, broderies et finitions seront dévoilées avec les premiers articles.",
   },
 
   closing: {

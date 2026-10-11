@@ -14,6 +14,7 @@ import {
   type KeyboardEvent,
   type PointerEvent,
 } from "react";
+import { Sparkle } from "lucide-react";
 import { cn } from "@/lib/cn";
 
 /**
@@ -33,6 +34,8 @@ const NO_ROTATION = motionValue(0);
  * Scène produit 360°. `rotation` est exprimée en tours (0 → 1 = un tour,
  * au-delà ça boucle) ; on y ajoute le glisser horizontal de l'utilisateur
  * (souris, tactile) et les flèches du clavier.
+ * Sans source (aucun produit) ou avec une séquence vide : placeholder
+ * « Produit à venir », aucune image chargée.
  */
 export function ProductStage({
   source,
@@ -41,7 +44,7 @@ export function ProductStage({
   draggable = true,
   className,
 }: {
-  source: ProductSource;
+  source?: ProductSource;
   /** Nom accessible du produit */
   label: string;
   rotation?: MotionValue<number>;
@@ -55,7 +58,9 @@ export function ProductStage({
         aria-hidden
         className="product-halo absolute inset-[-14%] rounded-full opacity-75 transition-opacity duration-500 group-hover/stage:opacity-100"
       />
-      {source.kind === "sequence" ? (
+      {!source || (source.kind === "sequence" && source.frames.length === 0) ? (
+        <PlaceholderStage label={label} />
+      ) : source.kind === "sequence" ? (
         <SequenceStage
           source={source}
           label={label}
@@ -194,17 +199,19 @@ function SequenceStage({
         draggable && "cursor-grab touch-pan-y active:cursor-grabbing",
       )}
     >
-      {/* Poster tant que la séquence charge */}
-      {/* eslint-disable-next-line @next/next/no-img-element -- poster de même taille que les frames, le temps du préchargement */}
-      <img
-        src={source.poster}
-        alt=""
-        draggable={false}
-        className={cn(
-          "absolute inset-0 size-full object-contain drop-shadow-[0_30px_40px_rgba(0,0,0,0.45)] transition-opacity duration-500",
-          ready ? "opacity-0" : "opacity-100",
-        )}
-      />
+      {/* Poster tant que la séquence charge (s'il est fourni) */}
+      {source.poster && (
+        // eslint-disable-next-line @next/next/no-img-element -- poster de même taille que les frames, le temps du préchargement
+        <img
+          src={source.poster}
+          alt=""
+          draggable={false}
+          className={cn(
+            "absolute inset-0 size-full object-contain drop-shadow-[0_30px_40px_rgba(0,0,0,0.45)] transition-opacity duration-500",
+            ready ? "opacity-0" : "opacity-100",
+          )}
+        />
+      )}
       <canvas
         ref={canvasRef}
         className={cn(
@@ -224,6 +231,69 @@ function SequenceStage({
           />
         </div>
       )}
+    </div>
+  );
+}
+
+/* --- Aucun produit : placeholder « Produit à venir » ---------------------- */
+
+/**
+ * Silhouette lumineuse dans le thème : anneaux dorés (rotation très lente,
+ * figée en mouvement réduit), halo et libellé. Aucune image.
+ */
+function PlaceholderStage({ label }: { label: string }) {
+  return (
+    <div
+      role="img"
+      aria-label={label}
+      className="absolute inset-0 grid place-items-center"
+    >
+      <svg
+        aria-hidden
+        viewBox="0 0 200 200"
+        className="absolute inset-[6%] animate-[spin_80s_linear_infinite]"
+      >
+        <circle
+          cx="100"
+          cy="100"
+          r="96"
+          fill="none"
+          className="stroke-gold/45"
+          strokeWidth="0.8"
+          strokeDasharray="2 6"
+        />
+        <circle
+          cx="100"
+          cy="100"
+          r="80"
+          fill="none"
+          className="stroke-white/15"
+          strokeWidth="0.6"
+        />
+        <circle
+          cx="100"
+          cy="100"
+          r="62"
+          fill="none"
+          className="stroke-royal-soft/30"
+          strokeWidth="0.6"
+          strokeDasharray="14 10"
+        />
+      </svg>
+      <div className="relative grid aspect-square w-[54%] place-items-center rounded-full border border-white/15 bg-[radial-gradient(circle,color-mix(in_srgb,var(--brand-royal)_22%,transparent),transparent_70%)] shadow-[inset_0_0_60px_-10px_color-mix(in_srgb,var(--brand-gold)_35%,transparent)]">
+        <span className="flex flex-col items-center gap-3 px-4 text-center">
+          <Sparkle
+            aria-hidden
+            className="size-7 fill-gold text-gold sm:size-9"
+          />
+          <span className="font-display text-lg leading-tight font-extrabold tracking-tight text-white sm:text-2xl">
+            Produit à venir
+          </span>
+          <span className="text-[0.65rem] font-semibold tracking-[0.25em] text-white/60 uppercase sm:text-xs">
+            Bientôt
+          </span>
+        </span>
+      </div>
     </div>
   );
 }
