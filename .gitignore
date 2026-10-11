@@ -52,3 +52,6 @@ next-env.d.ts
 
 # === Chasse au trésor : réponses en clair (JAMAIS committées) ===
 treasure.secrets.json
+
+# Sources lourdes (videos de scan, rushes) — non versionnees
+design-sources/
