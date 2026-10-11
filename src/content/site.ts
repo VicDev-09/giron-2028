@@ -57,5 +57,6 @@ export const navigation = [
   { href: "/la-jeunesse", label: "La Jeunesse" },
   { href: "/benevoles", label: "Bénévoles" },
   { href: "/sponsors", label: "Sponsors" },
+  { href: "/boutique", label: "Boutique" },
   { href: "/contact", label: "Contact" },
 ] as const;
