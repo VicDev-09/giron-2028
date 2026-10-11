@@ -1,193 +1,201 @@
 "use client";
 
-import { motion, useScroll, useTransform, type Variants } from "framer-motion";
-import { ChevronDown, Sparkle } from "lucide-react";
-import { useRef, useState, type CSSProperties } from "react";
+import {
+  motion,
+  useScroll,
+  useTransform,
+  useVelocity,
+  type Variants,
+} from "framer-motion";
+import { ChevronDown } from "lucide-react";
+import { useRef } from "react";
 import { boutique } from "@/content/boutique";
 import { site } from "@/content/site";
 import { ButtonLink } from "@/components/ui/Button";
 import { Container } from "@/components/ui/Section";
-import { cn } from "@/lib/cn";
 import { useMediaQuery } from "@/lib/media";
+import { PigmentField } from "./PigmentField";
+import { ProductSelector } from "./ProductSelector";
 import { ProductStage } from "./ProductStage";
 
 const ease = [0.22, 1, 0.36, 1] as const;
 const cascade: Variants = {
   hidden: {},
-  show: { transition: { staggerChildren: 0.14 } },
+  show: { transition: { staggerChildren: 0.12 } },
 };
 const rise: Variants = {
-  hidden: { opacity: 0, y: 28 },
+  hidden: { opacity: 0, y: 26 },
   show: { opacity: 1, y: 0, transition: { duration: 0.8, ease } },
 };
 
 const { product } = boutique;
+const PRESENTATION_ID = "presentation";
 
 /**
- * Vitrine de la future boutique : scroll narratif en sections plein écran.
- * Démo d'expérience uniquement — aucun panier, prix ni traitement serveur.
- * Animations liées au scroll en transform uniquement (les opacités passent
- * par des révélations à l'entrée dans l'écran). Mouvement réduit : figé.
+ * Vitrine de la future boutique (démo d'expérience, aucun e-commerce) :
+ * sélecteur → présentation 360° au scroll avec pigments → gros plan →
+ * clôture. Scroll-linked en transform uniquement ; les opacités passent par
+ * des révélations à l'entrée dans l'écran.
  */
 export function ShopShowcase() {
   return (
     <>
-      <Intro />
-      <Staging />
+      <Hero />
+      <Presentation />
       <Detail />
-      <VariantsDemo />
       <Closing />
     </>
   );
 }
 
-/* 1. Intro ---------------------------------------------------------------- */
-function Intro() {
+/* 1. Hero — sélecteur ------------------------------------------------------ */
+function Hero() {
   return (
-    <section className="tone-night grain shop-mesh relative isolate flex min-h-svh items-center overflow-hidden pt-28 pb-24">
-      <Container className="relative z-10 grid items-center gap-10 lg:grid-cols-2 lg:gap-6">
-        <div>
-          <p className="eyebrow mb-6 flex animate-rise items-center gap-3 text-gold">
-            <span aria-hidden className="h-px w-10 bg-current" />
-            {boutique.eyebrow}
-          </p>
-          <h1
-            className="display-xl animate-rise text-[clamp(3.4rem,12vw,7.5rem)] xl:text-[8.5rem]"
-            style={{ animationDelay: "0.08s" }}
-          >
-            {boutique.title.split(" ")[0]}{" "}
-            <span className="text-gradient">
-              {boutique.title.split(" ").slice(1).join(" ")}
-            </span>
-          </h1>
-          <p
-            className="mt-8 max-w-md animate-rise text-lg leading-relaxed text-pretty text-white/80 sm:text-xl"
-            style={{ animationDelay: "0.16s" }}
-          >
-            {boutique.intro}
-          </p>
-        </div>
-
-        <div className="product-enter mx-auto w-[min(78vw,26rem)] lg:w-[min(38vw,32rem)]">
-          <ProductStage source={product.source} priority />
+    <section className="tone-night grain shop-mesh relative isolate overflow-hidden pt-28 pb-20">
+      <Container className="relative z-10 text-center">
+        <p className="eyebrow inline-flex animate-rise items-center gap-3 text-gold">
+          <span aria-hidden className="h-px w-8 bg-current" />
+          {boutique.eyebrow}
+          <span aria-hidden className="h-px w-8 bg-current" />
+        </p>
+        <h1
+          className="display-xl mt-4 animate-rise text-[clamp(2.4rem,7vw,5rem)]"
+          style={{ animationDelay: "0.08s" }}
+        >
+          La <span className="text-gradient">collection</span>
+        </h1>
+        <div className="mt-6 animate-rise" style={{ animationDelay: "0.16s" }}>
+          <ProductSelector targetId={PRESENTATION_ID} />
         </div>
       </Container>
-
       <a
-        href="#mise-en-scene"
-        className="absolute bottom-6 left-1/2 flex -translate-x-1/2 flex-col items-center gap-2 text-xs font-semibold tracking-[0.2em] text-white/70 uppercase transition-colors hover:text-white"
+        href={`#${PRESENTATION_ID}`}
+        aria-label="Faire défiler vers la présentation"
+        className="absolute bottom-5 left-1/2 hidden -translate-x-1/2 text-white/60 transition-colors hover:text-white sm:block"
       >
-        Découvrir
-        <ChevronDown aria-hidden className="size-5 animate-bounce" />
+        <ChevronDown aria-hidden className="size-6 animate-bounce" />
       </a>
     </section>
   );
 }
 
-/* 2. Mise en scène au scroll ---------------------------------------------- */
-function Staging() {
+/* 2 + 3. Présentation au scroll, pigments --------------------------------- */
+function Presentation() {
   const ref = useRef<HTMLElement>(null);
-  // Comme `desktop` : identique au rendu serveur pendant l'hydratation
+  // Hooks SSR-safe : même valeur qu'au rendu serveur pendant l'hydratation
   const reduce = useMediaQuery("(prefers-reduced-motion: reduce)");
   const desktop = useMediaQuery("(min-width: 1024px)");
-  const { scrollYProgress } = useScroll({
+  const { scrollY, scrollYProgress } = useScroll({
     target: ref,
-    offset: ["start end", "end start"],
+    offset: ["start start", "end end"],
   });
-  // Amplitudes allégées sur mobile, nulles en mouvement réduit
-  const k = reduce ? 0 : desktop ? 1 : 0.5;
 
-  const scale = useTransform(
+  // La rotation au scroll reste active en mouvement réduit (elle EST la
+  // lecture du produit) ; parallaxe et pigments, eux, sont coupés.
+  const rotation = useTransform(scrollYProgress, [0, 1], [0, 1]);
+  const k = reduce ? 0 : desktop ? 1 : 0.5;
+  const productY = useTransform(
     scrollYProgress,
-    [0, 0.5, 1],
-    [1 - 0.18 * k, 1 + 0.06 * k, 1 + 0.12 * k],
+    [0, 1],
+    [`${6 * k}%`, `${-6 * k}%`],
   );
-  const x = useTransform(scrollYProgress, [0, 0.5], [`${-14 * k}%`, "0%"]);
-  const y = useTransform(scrollYProgress, [0, 1], [`${8 * k}%`, `${-8 * k}%`]);
   const shadowScale = useTransform(
     scrollYProgress,
     [0, 0.5, 1],
-    [1 - 0.3 * k, 1, 1 - 0.1 * k],
+    [1, 1 - 0.25 * k, 1],
   );
   const shadowX = useTransform(
     scrollYProgress,
-    [0, 0.5],
-    [`${-24 * k}%`, "0%"],
+    [0, 1],
+    [`${-10 * k}%`, `${10 * k}%`],
   );
   const bgY = useTransform(
     scrollYProgress,
     [0, 1],
-    [`${12 * k}%`, `${-12 * k}%`],
+    [`${10 * k}%`, `${-10 * k}%`],
   );
+  // Vitesse de scroll → tourbillon des pigments (0 au repos)
+  const velocity = useVelocity(scrollY);
+  const boost = useTransform(velocity, (v) => Math.min(Math.abs(v) / 900, 3));
 
   return (
     <section
-      id="mise-en-scene"
+      id={PRESENTATION_ID}
       ref={ref}
-      aria-labelledby="titre-mise-en-scene"
-      className="tone-night relative overflow-clip lg:h-[190vh]"
+      aria-labelledby="titre-presentation"
+      className="tone-night relative h-[240vh] overflow-clip lg:h-[300vh]"
     >
-      <div className="relative flex min-h-svh items-center py-24 lg:sticky lg:top-0 lg:h-svh lg:py-0">
-        {/* Fond : lueur lente (parallaxe la plus faible) */}
+      <div className="sticky top-0 flex h-svh items-center overflow-hidden">
+        {/* Fond : la parallaxe la plus lente */}
         <motion.div
           aria-hidden
           style={{ y: bgY }}
-          className="shop-mesh absolute -inset-y-[15%] inset-x-0 opacity-70"
+          className="shop-mesh absolute -inset-y-[15%] inset-x-0 opacity-80"
         />
-        <Container className="relative z-10 grid items-center gap-12 lg:grid-cols-2">
-          <div className="relative mx-auto w-[min(72vw,24rem)] lg:w-[min(36vw,30rem)]">
+
+        <Container className="relative z-10 grid items-center gap-6 lg:grid-cols-[1.1fr_1fr] lg:gap-12">
+          <div className="relative mx-auto w-[min(78vw,24rem)] sm:w-[min(60vw,28rem)] lg:w-[min(42vw,34rem)]">
             {/* Ombre portée : parallaxe distincte du produit */}
             <motion.div
               aria-hidden
               style={{ scaleX: shadowScale, x: shadowX }}
-              className="absolute inset-x-[12%] -bottom-[6%] h-[8%] rounded-[50%] bg-black/55 blur-xl"
+              className="absolute inset-x-[22%] bottom-[2%] h-[7%] rounded-[50%] bg-black/55 blur-xl"
             />
-            <motion.div style={{ scale, x, y }}>
-              <ProductStage
-                source={product.source}
-                interactive={false}
-                float={false}
-              />
-            </motion.div>
+            <PigmentField boost={boost} className="p-[14%] -m-[14%]">
+              <motion.div style={{ y: productY }}>
+                <ProductStage
+                  source={product.source}
+                  label={product.name}
+                  rotation={rotation}
+                />
+              </motion.div>
+            </PigmentField>
+            <p className="mt-2 text-center text-xs font-semibold tracking-[0.2em] text-white/55 uppercase">
+              Fais défiler ou glisse pour tourner
+            </p>
           </div>
 
           <motion.div
             variants={cascade}
             initial="hidden"
             whileInView="show"
-            viewport={{ once: true, amount: 0.35 }}
+            viewport={{ once: true, amount: 0.3 }}
+            className="rounded-3xl border border-white/10 bg-night/60 p-5 backdrop-blur-md sm:p-7 lg:border-0 lg:bg-transparent lg:p-0 lg:backdrop-blur-none"
           >
             <motion.p variants={rise} className="eyebrow text-gold">
-              {product.tagline}
+              {product.subtitle}
             </motion.p>
             <motion.h2
-              id="titre-mise-en-scene"
+              id="titre-presentation"
               variants={rise}
-              className="mt-3 font-display text-4xl leading-[0.95] font-extrabold tracking-tight sm:text-6xl"
+              className="mt-2 font-display text-3xl leading-[0.95] font-extrabold tracking-tight sm:text-5xl lg:text-6xl"
             >
               {product.name}
             </motion.h2>
-            <ul className="mt-10 space-y-7">
-              {boutique.story.map((item, i) => (
-                <motion.li
-                  key={item.title}
-                  variants={rise}
-                  className="flex gap-5"
+            <motion.dl
+              variants={rise}
+              className="mt-5 grid grid-cols-3 gap-2 sm:mt-8 sm:gap-3"
+            >
+              {product.specs.map((spec) => (
+                <div
+                  key={spec.label}
+                  className="rounded-2xl border border-white/10 bg-white/[0.04] px-3 py-2.5 sm:px-4 sm:py-3"
                 >
-                  <span className="font-display text-sm font-bold text-royal-soft tabular-nums">
-                    0{i + 1}
-                  </span>
-                  <span>
-                    <span className="block font-display text-xl font-bold">
-                      {item.title}
-                    </span>
-                    <span className="mt-1 block max-w-md leading-relaxed text-white/75">
-                      {item.text}
-                    </span>
-                  </span>
-                </motion.li>
+                  <dt className="text-[0.65rem] font-semibold tracking-[0.15em] text-white/60 uppercase">
+                    {spec.label}
+                  </dt>
+                  <dd className="mt-1 text-xs leading-snug font-semibold sm:text-sm">
+                    {spec.value}
+                  </dd>
+                </div>
               ))}
-            </ul>
+            </motion.dl>
+            <motion.p
+              variants={rise}
+              className="mt-5 hidden max-w-md leading-relaxed text-white/80 sm:block sm:text-lg"
+            >
+              {product.description}
+            </motion.p>
           </motion.div>
         </Container>
       </div>
@@ -195,10 +203,9 @@ function Staging() {
   );
 }
 
-/* 3. Gros plan sur le logo ------------------------------------------------- */
+/* 4. Gros plan ------------------------------------------------------------- */
 function Detail() {
   const ref = useRef<HTMLElement>(null);
-  // Comme `desktop` : identique au rendu serveur pendant l'hydratation
   const reduce = useMediaQuery("(prefers-reduced-motion: reduce)");
   const { scrollYProgress } = useScroll({
     target: ref,
@@ -207,7 +214,7 @@ function Detail() {
   const zoom = useTransform(
     scrollYProgress,
     [0, 1],
-    reduce ? [1.1, 1.1] : [0.95, 1.3],
+    reduce ? [2.1, 2.1] : [1.8, 2.5],
   );
 
   return (
@@ -218,18 +225,20 @@ function Detail() {
     >
       <Container className="grid items-center gap-12 lg:grid-cols-2">
         <div className="relative mx-auto size-[min(80vw,28rem)]">
-          <div className="absolute inset-0 overflow-hidden rounded-full border border-gold/40 bg-[radial-gradient(circle,var(--brand-dusk-2),var(--brand-night)_70%)] shadow-[0_30px_80px_-30px_rgba(0,0,0,0.8)]">
+          <div className="absolute inset-0 overflow-hidden rounded-full border border-gold/40 bg-[radial-gradient(circle,var(--brand-dusk-2),var(--brand-night)_72%)] shadow-[0_30px_80px_-30px_rgba(0,0,0,0.8)]">
+            {/* Gros plan sur le logo de la frame nette (cap_00) */}
             <motion.div
-              style={{ scale: zoom }}
-              className="absolute -inset-[30%]"
+              style={{ scale: zoom, transformOrigin: "49% 39%" }}
+              className="absolute inset-0"
             >
-              <ProductStage
-                source={product.source}
-                interactive={false}
-                float={false}
-                focus={{ ...product.logoFocus, scale: 2.2 }}
-                className="size-full"
-                sizes="(min-width: 1024px) 60vw, 100vw"
+              {/* eslint-disable-next-line @next/next/no-img-element -- frame 760×760 de la séquence, zoomée */}
+              <img
+                src={product.detailFrame}
+                alt={`${product.name}, gros plan sur la broderie`}
+                width={760}
+                height={760}
+                loading="lazy"
+                className="size-full object-contain"
               />
             </motion.div>
           </div>
@@ -261,88 +270,6 @@ function Detail() {
             {boutique.detail.text}
           </motion.p>
         </motion.div>
-      </Container>
-    </section>
-  );
-}
-
-/* 4. Variantes (démo d'ambiance) ------------------------------------------ */
-function VariantsDemo() {
-  const [active, setActive] = useState<string>(boutique.variants[0].id);
-  const tint = boutique.variants.find((v) => v.id === active)?.color;
-
-  return (
-    <section
-      aria-labelledby="titre-variantes"
-      className="tone-night relative overflow-hidden py-24 sm:py-32"
-      style={{ "--stage-tint": tint } as CSSProperties}
-    >
-      {/* Une lumière par teinte, en fondu croisé (opacité) */}
-      {boutique.variants.map((v) => (
-        <div
-          key={v.id}
-          aria-hidden
-          className="absolute inset-0 transition-opacity duration-700"
-          style={{
-            opacity: v.id === active ? 1 : 0,
-            background: `radial-gradient(60% 55% at 50% 45%, color-mix(in srgb, ${v.color} 32%, transparent), transparent 70%)`,
-          }}
-        />
-      ))}
-
-      <Container className="relative z-10 text-center">
-        <p className="inline-flex items-center gap-2 rounded-full border border-white/20 px-3 py-1 text-xs font-semibold tracking-[0.2em] text-white/80 uppercase">
-          <Sparkle aria-hidden className="size-3 fill-gold text-gold" />
-          Démo · aperçu d&apos;ambiance
-        </p>
-        <h2
-          id="titre-variantes"
-          className="mt-5 font-display text-4xl leading-[0.95] font-extrabold tracking-tight sm:text-6xl"
-        >
-          Choisis ton ambiance
-        </h2>
-
-        <div className="mx-auto mt-12 w-[min(70vw,22rem)] sm:w-[min(50vw,26rem)]">
-          <ProductStage source={product.source} />
-        </div>
-
-        <div
-          role="radiogroup"
-          aria-label="Teinte d'ambiance (démo)"
-          className="mt-12 flex justify-center gap-4"
-        >
-          {boutique.variants.map((v) => {
-            const selected = v.id === active;
-            return (
-              <button
-                key={v.id}
-                type="button"
-                role="radio"
-                aria-checked={selected}
-                aria-label={v.label}
-                onClick={() => setActive(v.id)}
-                className={cn(
-                  "grid size-12 place-items-center rounded-full border-2 transition-[transform,border-color] duration-300 hover:scale-110",
-                  selected ? "scale-110 border-white" : "border-white/25",
-                )}
-              >
-                <span
-                  className="size-8 rounded-full"
-                  style={{ background: v.color }}
-                />
-              </button>
-            );
-          })}
-        </div>
-        <p
-          aria-live="polite"
-          className="mt-4 text-sm font-semibold text-white/75"
-        >
-          {boutique.variants.find((v) => v.id === active)?.label}
-        </p>
-        <p className="mt-2 text-xs text-white/55">
-          Les coloris définitifs seront annoncés au lancement.
-        </p>
       </Container>
     </section>
   );

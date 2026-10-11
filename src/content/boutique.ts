@@ -1,67 +1,57 @@
 /**
  * Boutique — page VITRINE (démo d'expérience, pas d'e-commerce).
  *
- * ⚠️ CONTENU PROVISOIRE — aucun produit, prix ni stock réel. Un seul produit
- * test, aucun panier ni paiement, aucun traitement serveur.
+ * ⚠️ CONTENU PROVISOIRE — aucun produit, taille, prix ni stock réel. Un seul
+ * produit test, aucun panier ni paiement, aucun traitement serveur.
+ * Textes et caractéristiques ci-dessous : placeholders à remplacer.
  */
 import type { ProductSource } from "@/components/boutique/ProductStage";
 
+/** Séquence 360° : 36 images (une tous les 10°), fond transparent. */
+const capFrames = Array.from(
+  { length: 36 },
+  (_, i) => `/boutique/spin/cap_${String(i).padStart(2, "0")}.png`,
+);
+
 export const boutique = {
   eyebrow: "Boutique · Bientôt",
-  title: "La collection",
-  intro:
-    "Les couleurs du Giron, à porter bien après la fête. Un avant-goût de la future collection officielle.",
 
   product: {
-    name: "T-shirt Giron 2028",
-    tagline: "Édition test",
-    /**
-     * Visuel du produit. Aujourd'hui : une image PNG détourée.
-     * Demain : une séquence d'images pour un vrai 360°, par exemple
-     *   { kind: "sequence", frames: ["/boutique/spin/01.webp", …], alt }
-     * Voir ProductStage (point d'extension documenté).
-     */
+    id: "casquette",
+    name: "Casquette Giron",
+    subtitle: "Brodée, ajustable — édition test",
     source: {
-      kind: "image",
-      src: "/boutique/tshirt-test.png",
-      alt: "T-shirt Giron 2028, modèle test",
+      kind: "sequence",
+      frames: capFrames,
+      poster: "/boutique/cap-poster.png",
     } satisfies ProductSource,
-    /** Position du logo dans le visuel (0–1), pour le gros plan */
-    logoFocus: { x: 0.5, y: 0.34 },
+    /** Frame nette utilisée pour le gros plan (cap_00) */
+    detailFrame: capFrames[0],
+    specs: [
+      { label: "Matière", value: "Coton sergé épais" },
+      { label: "Taille", value: "Unique, ajustable" },
+      { label: "Édition", value: "Made for Giron 2028" },
+    ],
+    description:
+      "La casquette officielle de l'édition : visière courbée, logo brodé et fermeture réglable. Pour le soleil de juillet comme pour les nuits sous la Tonnelle.",
   },
 
-  story: [
-    {
-      title: "Pensé pour la fête",
-      text: "Une coupe ample et un coton épais qui tient du premier verre au passage du drapeau.",
-    },
-    {
-      title: "Signé Giron 2028",
-      text: "Le logo de l'édition, imprimé sur le cœur, aux couleurs de la Nuit britannique.",
-    },
-    {
-      title: "Fait pour durer",
-      text: "Un souvenir à porter longtemps après la fête — et à ressortir au prochain Giron.",
-    },
+  /** Emplacements « Bientôt » du sélecteur (icônes lucide) */
+  upcoming: [
+    { id: "tshirt", label: "T-shirt", icon: "shirt" },
+    { id: "gourde", label: "Gourde", icon: "bottle" },
   ],
 
   detail: {
-    eyebrow: "Le détail",
-    title: "Sérigraphié avec soin",
-    text: "Encres à l'eau, tirage en petite série, coton biologique épais. Caractéristiques définitives à confirmer.",
+    eyebrow: "La finition",
+    title: "Brodé à la main",
+    text: "Logo en broderie dense, coutures renforcées et intérieur doublé. Détails de fabrication définitifs à confirmer.",
   },
-
-  /** Teintes d'ambiance de la démo (tokens de marque) */
-  variants: [
-    { id: "nuit", label: "Nuit marine", color: "var(--brand-royal)" },
-    { id: "rouge", label: "Rouge Londres", color: "var(--brand-scarlet)" },
-    { id: "or", label: "Or royal", color: "var(--brand-gold)" },
-  ],
 
   closing: {
     title: "Sois le premier informé",
     text: "Laisse-nous un mot : on te prévient dès l'ouverture de la boutique.",
     cta: "M'avertir au lancement",
-    note: "Produits et prix à venir.",
+    note: "Produits, tailles et prix à venir.",
   },
 } as const;
