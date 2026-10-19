@@ -17,6 +17,8 @@
 .env.production
 *.pem
 *.key
+treasure.secrets.json
+design-sources/
 
 # === Logs ===
 npm-debug.log*
